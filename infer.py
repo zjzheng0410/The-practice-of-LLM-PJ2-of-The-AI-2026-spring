@@ -1,8 +1,7 @@
 import json
 import torch
 from tqdm import tqdm
-from modelscope import AutoTokenizer
-from transformers import AutoModelForCausalLM
+from transformers import AutoModelForCausalLM, AutoTokenizer
 from peft import PeftModel
 
 def predict(messages, model, tokenizer):

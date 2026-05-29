@@ -1,0 +1,6 @@
+# ignore the qwen model files, which are too large to be tracked by git
+/Qwen/
+
+# ignore the tamp files
+/._____temp/
+/.lock/

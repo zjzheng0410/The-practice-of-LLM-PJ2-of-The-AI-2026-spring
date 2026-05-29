@@ -1,9 +1,9 @@
 import json
 import torch
-from modelscope import snapshot_download, AutoTokenizer
+from modelscope import snapshot_download
 from swanlab.integration.huggingface import SwanLabCallback
 from peft import LoraConfig, TaskType, get_peft_model
-from transformers import AutoModelForCausalLM, TrainingArguments, Trainer, DataCollatorForSeq2Seq
+from transformers import AutoTokenizer, AutoModelForCausalLM, TrainingArguments, Trainer, DataCollatorForSeq2Seq
 import swanlab
 
             
