@@ -12,6 +12,7 @@ from infer import DEFAULT_BASE_MODEL, build_messages, load_json_rows, load_model
 
 LONG_QUESTION_LENGTH = 100
 FRACTION_TYPES = {"fraction", "mixed_fraction"}
+DEFAULT_VALID_FILE = "data/clean_data/valid_sft_v1.json"
 
 
 def _safe_accuracy(correct: int, total: int) -> float | None:
@@ -79,7 +80,7 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
     parser.add_argument("--base-model", default=DEFAULT_BASE_MODEL, help="基础模型路径")
     parser.add_argument("--checkpoint", required=True, help="LoRA checkpoint 路径")
-    parser.add_argument("--valid-file", default="data/valid_sft_v1.json", help="验证集 JSON 路径")
+    parser.add_argument("--valid-file", default=DEFAULT_VALID_FILE, help="验证集 JSON 路径")
     parser.add_argument("--experiment-id", required=True, help="实验编号")
     parser.add_argument("--max-new-tokens", type=int, default=32, help="最大生成 token 数")
     parser.add_argument("--output-dir", default="eval", help="评估输出目录")
@@ -141,10 +142,10 @@ def main() -> None:
         if not correct:
             wrong_records.append(record)
 
-    output_dir = Path(args.output_dir)
-    metrics_path = output_dir / f"{args.experiment_id}_metrics.json"
-    raw_path = output_dir / f"{args.experiment_id}_raw.jsonl"
-    wrong_path = output_dir / f"{args.experiment_id}_wrong.jsonl"
+    output_dir = Path(args.output_dir) / args.experiment_id
+    metrics_path = output_dir / "metrics.json"
+    raw_path = output_dir / "raw.jsonl"
+    wrong_path = output_dir / "wrong.jsonl"
 
     metrics = _build_metrics(raw_records)
     metrics.update(

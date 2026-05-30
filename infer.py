@@ -14,6 +14,7 @@ from answer_utils import extract_final_answer
 
 DEFAULT_BASE_MODEL = "./Qwen/Qwen2.5-0.5B-Instruct/"
 DEFAULT_CHECKPOINT = "./output/Qwen/checkpoint-3750/"
+DEFAULT_TEST_FILE = "data/raw_data/test.json"
 
 
 def build_messages(instruction: str, question: str) -> list[dict[str, str]]:
@@ -114,7 +115,7 @@ def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
     parser.add_argument("--base-model", default=DEFAULT_BASE_MODEL, help="基础模型路径")
     parser.add_argument("--checkpoint", default=DEFAULT_CHECKPOINT, help="LoRA checkpoint 路径")
-    parser.add_argument("--test-file", default="test.json", help="测试集 JSON 路径")
+    parser.add_argument("--test-file", default=DEFAULT_TEST_FILE, help="测试集 JSON 路径")
     parser.add_argument("--output", default=None, help="输出 CSV 文件名或路径")
     parser.add_argument("--raw-output", default=None, help="原始预测 JSONL 文件名或路径")
     parser.add_argument("--max-new-tokens", type=int, default=32, help="最大生成 token 数")

@@ -10,3 +10,6 @@
 
 #ignore the test files
 /test/
+
+# ignore Python cache directories at any depth
+__pycache__/

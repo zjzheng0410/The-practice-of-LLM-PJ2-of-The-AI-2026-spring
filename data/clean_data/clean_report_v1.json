@@ -703,9 +703,9 @@
   "train_count": 10902,
   "valid_count": 1000,
   "output_files": {
-    "train_clean": "data/train_clean_v1.json",
-    "train_sft": "data/train_sft_v1.json",
-    "valid_sft": "data/valid_sft_v1.json",
-    "clean_report": "data/clean_report_v1.json"
+    "train_clean": "data/clean_data/train_clean_v1.json",
+    "train_sft": "data/clean_data/train_sft_v1.json",
+    "valid_sft": "data/clean_data/valid_sft_v1.json",
+    "clean_report": "data/clean_data/clean_report_v1.json"
   }
 }

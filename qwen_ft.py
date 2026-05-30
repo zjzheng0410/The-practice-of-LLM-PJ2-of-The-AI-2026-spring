@@ -12,6 +12,8 @@ from transformers import AutoModelForCausalLM, AutoTokenizer, DataCollatorForSeq
 
 DEFAULT_BASE_MODEL = "./Qwen/Qwen2.5-0.5B-Instruct"
 DEFAULT_OUTPUT_DIR = "./output/Qwen"
+DEFAULT_TRAIN_FILE = "data/clean_data/train_sft_v1.json"
+DEFAULT_VALID_FILE = "data/clean_data/valid_sft_v1.json"
 LORA_TARGET_MODULES = ["q_proj", "k_proj", "v_proj", "o_proj", "gate_proj", "up_proj", "down_proj"]
 
 
@@ -62,8 +64,8 @@ def build_dataset(path: Path, tokenizer: Any, max_length: int) -> list[dict[str,
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
     parser.add_argument("--base-model", default=DEFAULT_BASE_MODEL, help="基础模型路径")
-    parser.add_argument("--train-file", default="train.json", help="训练集 JSON 路径")
-    parser.add_argument("--valid-file", default=None, help="验证集 JSON 路径；不传则保持 baseline 训练行为")
+    parser.add_argument("--train-file", default=DEFAULT_TRAIN_FILE, help="训练集 JSON 路径")
+    parser.add_argument("--valid-file", default=DEFAULT_VALID_FILE, help="验证集 JSON 路径")
     parser.add_argument("--output-dir", default=None, help="checkpoint 输出目录")
     parser.add_argument("--experiment-id", default=None, help="实验编号；未指定 output-dir 时用于生成输出目录")
     parser.add_argument("--epochs", type=float, default=5, help="训练轮数")

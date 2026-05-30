@@ -11,6 +11,8 @@ from answer_utils import classify_answer, normalize_answer
 DEFAULT_SEED = 20260530
 DEFAULT_VALID_SIZE = 1000
 DEFAULT_VERSION = "v1"
+DEFAULT_INPUT_FILE = "data/raw_data/train.json"
+DEFAULT_OUTPUT_DIR = "data/clean_data"
 
 
 def clean_question(value: Any) -> tuple[str, bool, int]:
@@ -203,8 +205,8 @@ def run_prepare_data(
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--input-file", default="train.json", help="原始训练数据路径")
-    parser.add_argument("--output-dir", default="data", help="清洗数据输出目录")
+    parser.add_argument("--input-file", default=DEFAULT_INPUT_FILE, help="原始训练数据路径")
+    parser.add_argument("--output-dir", default=DEFAULT_OUTPUT_DIR, help="清洗数据输出目录")
     parser.add_argument("--version", default=DEFAULT_VERSION, help="输出数据版本号")
     parser.add_argument("--valid-size", type=int, default=DEFAULT_VALID_SIZE, help="固定验证集大小")
     parser.add_argument("--seed", type=int, default=DEFAULT_SEED, help="固定切分随机种子")
