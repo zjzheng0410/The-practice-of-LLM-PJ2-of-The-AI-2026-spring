@@ -13,3 +13,4 @@
 
 # ignore Python cache directories at any depth
 __pycache__/
+/__pycache__/
