@@ -29,11 +29,11 @@ def process_func(example):
         labels = labels[:MAX_LENGTH]
     return {"input_ids": input_ids, "attention_mask": attention_mask, "labels": labels}   
 
-model_dir = snapshot_download("Qwen/Qwen2.5-0.5B-Instruct", cache_dir="./", revision="master")
-
+# model_dir = snapshot_download("Qwen/Qwen2.5-0.5B-Instruct", cache_dir="./", revision="master")
+MODEL_DIR = "./Qwen/Qwen2.5-0.5B-Instruct"
 # Transformers加载模型权重
-tokenizer = AutoTokenizer.from_pretrained("./Qwen/Qwen2.5-0.5B-Instruct/", use_fast=False, trust_remote_code=True)
-model = AutoModelForCausalLM.from_pretrained("./Qwen/Qwen2.5-0.5B-Instruct/", device_map="auto", torch_dtype=torch.bfloat16)
+tokenizer = AutoTokenizer.from_pretrained(MODEL_DIR, use_fast=False, trust_remote_code=True)
+model = AutoModelForCausalLM.from_pretrained(MODEL_DIR, device_map="auto", torch_dtype=torch.bfloat16)
 model.enable_input_require_grads()  # 开启梯度检查点时，要执行该方法
 
 train_json_new_path = "train.json"
