@@ -7,3 +7,6 @@
 
 #ignore the output files
 /output/
+
+#ignore the test files
+/test/
