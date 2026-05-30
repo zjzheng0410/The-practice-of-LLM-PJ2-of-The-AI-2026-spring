@@ -1,4 +1,6 @@
+import argparse
 import json
+from pathlib import Path
 import torch
 from tqdm import tqdm
 from transformers import AutoModelForCausalLM, AutoTokenizer
@@ -25,6 +27,12 @@ def predict(messages, model, tokenizer):
      
     return response
 
+parser = argparse.ArgumentParser()
+parser.add_argument("--output", default="submit.csv", help="output csv file name")
+args = parser.parse_args()
+output_path = Path("submit") / args.output
+output_path.parent.mkdir(parents=True, exist_ok=True)
+
 test_json_new_path = "test.json"
 
 with open(test_json_new_path, 'r', encoding='utf-8') as file:
@@ -34,8 +42,8 @@ tokenizer = AutoTokenizer.from_pretrained("./Qwen/Qwen2.5-0.5B-Instruct/", use_f
 model = AutoModelForCausalLM.from_pretrained("./Qwen/Qwen2.5-0.5B-Instruct/", device_map="auto", torch_dtype=torch.bfloat16)
 model = PeftModel.from_pretrained(model, model_id="./output/Qwen/checkpoint-3750/")
 
-with open("submit.csv", 'w', encoding='utf-8') as file:
-    for idx, row in tqdm(enumerate(test_data)):
+with open(output_path, 'w', encoding='utf-8') as file:
+    for row in tqdm(test_data):
         instruction = row['instruction']
         input_value = row['question']
         id = row['id']
@@ -47,5 +55,3 @@ with open("submit.csv", 'w', encoding='utf-8') as file:
         response = predict(messages, model, tokenizer)
         response = response.replace('\n', ' ')
         file.write(f"{id},{response}\n")
-
-
