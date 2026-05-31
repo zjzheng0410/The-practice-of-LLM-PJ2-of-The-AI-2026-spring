@@ -120,3 +120,157 @@ output/<experiment>/checkpoint-<step>/
 
 远端进入同一环境和 `Math_Solver` 目录后，使用 `python -m evaluation.evaluate_checkpoint` 或 `python -m evaluation.evaluate_checkpoints` 执行评估。
 
+## clean-006：v2 baseline
+
+默认已经在当前 conda 环境和 `Math_Solver` 目录下。`clean-006` 只使用 `valid_v2` 后的新数据切分，不改训练策略，用作无泄漏 v2 基准。
+
+训练前确认 `valid_v2` 切分无泄漏：
+
+```bash
+python - <<'PY'
+import json
+from pathlib import Path
+
+report = json.loads(Path("data/clean_data/split_report_v2.json").read_text(encoding="utf-8"))
+if report["train_valid_overlap_group_count"] != 0:
+    raise ValueError("valid_v2 存在 train/valid 同题泄漏")
+print("valid_v2 overlap =", report["train_valid_overlap_group_count"])
+print("train rows =", report["actual_train_size"])
+print("valid rows =", report["actual_valid_size"])
+PY
+```
+
+训练命令：
+
+```bash
+python -u qwen_ft.py \
+  --train-file data/clean_data/train_sft_v2.json \
+  --valid-file data/clean_data/valid_sft_v2.json \
+  --output-dir output/clean-006 \
+  --experiment-id clean-006 \
+  --epochs 5 \
+  --learning-rate 1e-4 \
+  --max-length 384 \
+  --lora-r 8 \
+  --save-steps 1000
+```
+
+对 `clean-006` 的所有 checkpoint 做生成式评估与 ranking：
+
+```bash
+python -m evaluation.evaluate_checkpoints \
+  --experiment-dir output/clean-006 \
+  --experiment-id clean-006 \
+  --valid-file data/clean_data/valid_sft_v2.json \
+  --max-new-tokens 32 \
+  --output-dir eval_result \
+  --split-name valid_v2
+```
+
+查看 `clean-006` 最佳 checkpoint：
+
+```bash
+python -m json.tool eval_result/valid_v2/clean-006/best_checkpoint.json
+```
+
+## clean-007：v2 + max_length 512
+
+`clean-007` 只相对 `clean-006` 修改 `max_length`，从 `384` 改成 `512`，用于判断长输入截断是否影响 `valid_v2` 生成准确率。
+
+训练命令：
+
+```bash
+python -u qwen_ft.py \
+  --train-file data/clean_data/train_sft_v2.json \
+  --valid-file data/clean_data/valid_sft_v2.json \
+  --output-dir output/clean-007 \
+  --experiment-id clean-007 \
+  --epochs 5 \
+  --learning-rate 1e-4 \
+  --max-length 512 \
+  --lora-r 8 \
+  --save-steps 1000
+```
+
+对 `clean-007` 的所有 checkpoint 做生成式评估与 ranking：
+
+```bash
+python -m evaluation.evaluate_checkpoints \
+  --experiment-dir output/clean-007 \
+  --experiment-id clean-007 \
+  --valid-file data/clean_data/valid_sft_v2.json \
+  --max-new-tokens 32 \
+  --output-dir eval_result \
+  --split-name valid_v2
+```
+
+查看 `clean-007` 最佳 checkpoint：
+
+```bash
+python -m json.tool eval_result/valid_v2/clean-007/best_checkpoint.json
+```
+
+## clean-006 与 clean-007 对比
+
+汇总两个实验的 best checkpoint：
+
+```bash
+python - <<'PY'
+import json
+from pathlib import Path
+
+experiments = ["clean-006", "clean-007"]
+for exp in experiments:
+    path = Path("eval_result/valid_v2") / exp / "best_checkpoint.json"
+    data = json.loads(path.read_text(encoding="utf-8"))
+    print(
+        exp,
+        "checkpoint=", data["selected_checkpoint"],
+        "step=", data["selected_step"],
+        "accuracy=", data["accuracy"],
+        "correct=", data["correct"],
+        "total=", data["total"],
+    )
+PY
+```
+
+查看两个实验 ranking 前 5 名：
+
+```bash
+python - <<'PY'
+import json
+from pathlib import Path
+
+for exp in ["clean-006", "clean-007"]:
+    ranking_path = Path("eval_result/valid_v2") / exp / "ranking.json"
+    ranking = json.loads(ranking_path.read_text(encoding="utf-8"))
+    print(f"\n{exp} top 5")
+    for row in ranking[:5]:
+        print(
+            row["checkpoint_name"],
+            "accuracy=", row["accuracy"],
+            "postprocess_failure_rate=", row["postprocess_failure_rate"],
+            "correct=", row["correct"],
+            "total=", row["total"],
+        )
+PY
+```
+
+若需要用最佳 checkpoint 生成测试集提交，先从 `best_checkpoint.json` 取路径，再执行：
+
+```bash
+BEST_CKPT=$(python - <<'PY'
+import json
+from pathlib import Path
+
+data = json.loads(Path("eval_result/valid_v2/clean-007/best_checkpoint.json").read_text(encoding="utf-8"))
+print(data["selected_checkpoint"])
+PY
+)
+
+python -u infer.py \
+  --checkpoint "${BEST_CKPT}" \
+  --test-file data/raw_data/test.json \
+  --experiment-id clean-007-best \
+  --max-new-tokens 32
+```

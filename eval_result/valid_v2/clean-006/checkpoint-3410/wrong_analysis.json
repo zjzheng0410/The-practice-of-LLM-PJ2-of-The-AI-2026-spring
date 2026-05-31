@@ -1,0 +1,90 @@
+{
+  "total_wrong": 655,
+  "tag_counts": {
+    "answer_type_mismatch": {
+      "count": 55,
+      "ratio": 0.08396946564885496
+    },
+    "fraction_percent_error": {
+      "count": 1,
+      "ratio": 0.0015267175572519084
+    },
+    "geometry_keyword": {
+      "count": 68,
+      "ratio": 0.10381679389312977
+    },
+    "long_question": {
+      "count": 4,
+      "ratio": 0.0061068702290076335
+    },
+    "multi_step_keyword": {
+      "count": 247,
+      "ratio": 0.37709923664122136
+    },
+    "numeric_value_error": {
+      "count": 599,
+      "ratio": 0.9145038167938931
+    },
+    "rate_ratio_keyword": {
+      "count": 37,
+      "ratio": 0.05648854961832061
+    },
+    "unit_scale_suspect": {
+      "count": 18,
+      "ratio": 0.02748091603053435
+    }
+  },
+  "by_answer_type": {
+    "decimal": 76,
+    "fraction": 31,
+    "integer": 529,
+    "multi_answer": 1,
+    "percent": 18
+  },
+  "by_pred_answer_type": {
+    "decimal": 63,
+    "fraction": 29,
+    "integer": 544,
+    "mixed_fraction": 1,
+    "percent": 17,
+    "yes_no": 1
+  },
+  "by_extract_status": {
+    "matched": 655
+  },
+  "answer_type_x_attribution_tag": {
+    "decimal": {
+      "answer_type_mismatch": 30,
+      "geometry_keyword": 24,
+      "multi_step_keyword": 29,
+      "numeric_value_error": 46,
+      "rate_ratio_keyword": 2,
+      "unit_scale_suspect": 1
+    },
+    "fraction": {
+      "answer_type_mismatch": 4,
+      "fraction_percent_error": 1,
+      "multi_step_keyword": 21,
+      "numeric_value_error": 26,
+      "rate_ratio_keyword": 5
+    },
+    "integer": {
+      "answer_type_mismatch": 19,
+      "geometry_keyword": 43,
+      "long_question": 4,
+      "multi_step_keyword": 189,
+      "numeric_value_error": 510,
+      "rate_ratio_keyword": 30,
+      "unit_scale_suspect": 17
+    },
+    "multi_answer": {
+      "answer_type_mismatch": 1
+    },
+    "percent": {
+      "answer_type_mismatch": 1,
+      "geometry_keyword": 1,
+      "multi_step_keyword": 8,
+      "numeric_value_error": 17
+    }
+  }
+}
