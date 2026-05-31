@@ -274,3 +274,107 @@ python -u infer.py \
   --experiment-id clean-007-best \
   --max-new-tokens 32
 ```
+
+## clean-008：训练数据轻量重采样
+
+`clean-008` 只相对 `clean-006` 更换训练数据为轻量重采样版本，验证集、训练参数和评估方式保持不变。
+
+生成增强训练集和增强报告：
+
+```bash
+python -m data_preprocess.augment_train \
+  --input-train data/clean_data/train_sft_v2.json \
+  --valid-file data/clean_data/valid_sft_v2.json \
+  --output-train data/clean_data/train_sft_clean008.json \
+  --report-file data/clean_data/augment_report_clean008.json \
+  --policy clean008
+```
+
+检查增强报告：
+
+```bash
+python -m json.tool data/clean_data/augment_report_clean008.json
+```
+
+已生成结果：
+
+```text
+original_train_count = 10902
+added_count = 2794
+augmented_train_count = 13696
+augment_ratio = 1.2563
+train_valid_overlap_group_count = 0
+source_id_duplicate_group_count = 9
+source_id_renamed_row_count = 18
+```
+
+训练命令：
+
+```bash
+python -u qwen_ft.py \
+  --train-file data/clean_data/train_sft_clean008.json \
+  --valid-file data/clean_data/valid_sft_v2.json \
+  --output-dir output/clean-008 \
+  --experiment-id clean-008 \
+  --epochs 5 \
+  --learning-rate 1e-4 \
+  --max-length 384 \
+  --lora-r 8 \
+  --save-steps 1000
+```
+
+对 `clean-008` 的所有 checkpoint 做生成式评估与 ranking：
+
+```bash
+python -m evaluation.evaluate_checkpoints \
+  --experiment-dir output/clean-008 \
+  --experiment-id clean-008 \
+  --valid-file data/clean_data/valid_sft_v2.json \
+  --max-new-tokens 32 \
+  --output-dir eval_result \
+  --split-name valid_v2
+```
+
+汇总 `clean-006`、`clean-007`、`clean-008` 的 best checkpoint：
+
+```bash
+python - <<'PY'
+import json
+from pathlib import Path
+
+experiments = ["clean-006", "clean-007", "clean-008"]
+for exp in experiments:
+    path = Path("eval_result/valid_v2") / exp / "best_checkpoint.json"
+    data = json.loads(path.read_text(encoding="utf-8"))
+    print(
+        exp,
+        "checkpoint=", data["selected_checkpoint"],
+        "step=", data["selected_step"],
+        "accuracy=", data["accuracy"],
+        "correct=", data["correct"],
+        "total=", data["total"],
+    )
+PY
+```
+
+查看三个实验 ranking 前 5 名：
+
+```bash
+python - <<'PY'
+import json
+from pathlib import Path
+
+for exp in ["clean-006", "clean-007", "clean-008"]:
+    ranking_path = Path("eval_result/valid_v2") / exp / "ranking.json"
+    ranking = json.loads(ranking_path.read_text(encoding="utf-8"))
+    print(f"\n{exp} top 5")
+    for row in ranking[:5]:
+        print(
+            row["checkpoint_name"],
+            "accuracy=", row["accuracy"],
+            "postprocess_failure_rate=", row["postprocess_failure_rate"],
+            "correct=", row["correct"],
+            "total=", row["total"],
+        )
+PY
+```

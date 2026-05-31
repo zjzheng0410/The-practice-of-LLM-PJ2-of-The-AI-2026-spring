@@ -1,0 +1,197 @@
+{
+  "policy": "clean008_weak_type_oversample_v1",
+  "input_train_file": "data/clean_data/train_sft_v2.json",
+  "valid_file": "data/clean_data/valid_sft_v2.json",
+  "output_train_file": "data/clean_data/train_sft_clean008.json",
+  "original_train_count": 10902,
+  "augmented_train_count": 13696,
+  "added_count": 2794,
+  "answer_type_distribution_before": {
+    "decimal": 1076,
+    "fraction": 350,
+    "integer": 9154,
+    "mixed_fraction": 21,
+    "multi_answer": 2,
+    "percent": 290,
+    "yes_no": 9
+  },
+  "answer_type_distribution_after": {
+    "decimal": 2152,
+    "fraction": 700,
+    "integer": 10480,
+    "mixed_fraction": 42,
+    "multi_answer": 2,
+    "percent": 311,
+    "yes_no": 9
+  },
+  "feature_tag_counts": {
+    "geometry": 1248,
+    "multi_step": 3441,
+    "rate_ratio": 638,
+    "unit_scale": 4531,
+    "weak_answer_type": 1447
+  },
+  "augment_reason_counts": {
+    "rate_ratio": 638,
+    "unit_scale_focus": 2065,
+    "weak_answer_type": 1447
+  },
+  "max_duplicate_per_source": 1,
+  "augmented_source_count": 2794,
+  "train_valid_overlap_group_count": 0,
+  "train_valid_overlap_group_sample": [],
+  "output_files": {
+    "output_train": "data/clean_data/train_sft_clean008.json",
+    "augment_report": "data/clean_data/augment_report_clean008.json"
+  },
+  "strategy_parameters": {
+    "policy_alias": "clean008",
+    "policy_name": "clean008_weak_type_oversample_v1",
+    "weak_answer_types": [
+      "decimal",
+      "fraction",
+      "mixed_fraction"
+    ],
+    "rate_ratio_keywords": [
+      "比例",
+      "百分比",
+      "百分数",
+      "倍数",
+      "速度",
+      "工程",
+      "比例尺",
+      "相遇",
+      "平均速度"
+    ],
+    "unit_scale_keywords": [
+      "长度",
+      "面积",
+      "体积",
+      "重量",
+      "容量",
+      "千米",
+      "公里",
+      "米",
+      "分米",
+      "厘米",
+      "毫米",
+      "吨",
+      "千克",
+      "公斤",
+      "克",
+      "升",
+      "毫升",
+      "平方米",
+      "平方厘米",
+      "立方米",
+      "立方厘米"
+    ],
+    "geometry_keywords": [
+      "面积",
+      "周长",
+      "体积",
+      "圆柱",
+      "半径",
+      "直径",
+      "长方体",
+      "正方体"
+    ],
+    "multi_step_keywords": [
+      "先",
+      "后",
+      "剩下",
+      "又",
+      "比",
+      "多次"
+    ],
+    "feature_tag_order": [
+      "weak_answer_type",
+      "rate_ratio",
+      "unit_scale",
+      "geometry",
+      "multi_step"
+    ],
+    "augment_reason_order": [
+      "weak_answer_type",
+      "rate_ratio",
+      "unit_scale_focus"
+    ],
+    "unit_scale_focus_tags": [
+      "weak_answer_type",
+      "rate_ratio",
+      "geometry"
+    ],
+    "max_duplicate_per_source": 1,
+    "augment_id_suffix": "__clean008_aug1",
+    "duplicate_source_id_suffix": "__clean008_src",
+    "original_id_field": "original_id",
+    "multi_step_triggers_copy": false
+  },
+  "source_id_duplicate_group_count": 9,
+  "source_id_renamed_row_count": 18,
+  "source_id_renamed_sample": [
+    {
+      "original_id": "10352",
+      "renamed_ids": [
+        "10352__clean008_src1",
+        "10352__clean008_src2"
+      ]
+    },
+    {
+      "original_id": "10484",
+      "renamed_ids": [
+        "10484__clean008_src1",
+        "10484__clean008_src2"
+      ]
+    },
+    {
+      "original_id": "10541",
+      "renamed_ids": [
+        "10541__clean008_src1",
+        "10541__clean008_src2"
+      ]
+    },
+    {
+      "original_id": "10569",
+      "renamed_ids": [
+        "10569__clean008_src1",
+        "10569__clean008_src2"
+      ]
+    },
+    {
+      "original_id": "10670",
+      "renamed_ids": [
+        "10670__clean008_src1",
+        "10670__clean008_src2"
+      ]
+    },
+    {
+      "original_id": "10794",
+      "renamed_ids": [
+        "10794__clean008_src1",
+        "10794__clean008_src2"
+      ]
+    },
+    {
+      "original_id": "10838",
+      "renamed_ids": [
+        "10838__clean008_src1",
+        "10838__clean008_src2"
+      ]
+    },
+    {
+      "original_id": "10959",
+      "renamed_ids": [
+        "10959__clean008_src1",
+        "10959__clean008_src2"
+      ]
+    },
+    {
+      "original_id": "11456",
+      "renamed_ids": [
+        "11456__clean008_src1",
+        "11456__clean008_src2"
+      ]
+    }
+  ]
+}

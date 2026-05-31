@@ -5,6 +5,10 @@ from typing import Any
 from data_preprocess.split import GROUP_KEY_POLICY
 
 
+def _sorted_counter_dict(counter: Counter[str] | dict[str, int]) -> dict[str, int]:
+    return {key: int(counter[key]) for key in sorted(counter)}
+
+
 def duplicate_id_report(rows: list[dict[str, Any]]) -> dict[str, Any]:
     ids = [str(row["id"]) for row in rows if "id" in row]
     counts = Counter(ids)
@@ -69,3 +73,48 @@ def build_split_report(
         "output_files": {name: str(path) for name, path in output_paths.items()},
     }
 
+
+def build_augment_report(
+    policy: str,
+    input_train_file: Path,
+    valid_file: Path,
+    output_train_file: Path,
+    original_train_rows: list[dict[str, Any]],
+    augmented_train_rows: list[dict[str, Any]],
+    added_rows: list[dict[str, Any]],
+    feature_tag_counts: Counter[str],
+    augment_reason_counts: Counter[str],
+    duplicate_counts_by_source: Counter[str],
+    train_valid_overlap_group_keys: set[str],
+    output_paths: dict[str, Path],
+    strategy_parameters: dict[str, Any],
+    source_id_duplicate_group_count: int,
+    source_id_renamed_row_count: int,
+    source_id_renamed_sample: list[dict[str, Any]],
+) -> dict[str, Any]:
+    return {
+        "policy": policy,
+        "input_train_file": str(input_train_file),
+        "valid_file": str(valid_file),
+        "output_train_file": str(output_train_file),
+        "original_train_count": len(original_train_rows),
+        "augmented_train_count": len(augmented_train_rows),
+        "added_count": len(added_rows),
+        "answer_type_distribution_before": _sorted_counter_dict(
+            Counter(str(row["answer_type"]) for row in original_train_rows)
+        ),
+        "answer_type_distribution_after": _sorted_counter_dict(
+            Counter(str(row["answer_type"]) for row in augmented_train_rows)
+        ),
+        "feature_tag_counts": _sorted_counter_dict(feature_tag_counts),
+        "augment_reason_counts": _sorted_counter_dict(augment_reason_counts),
+        "max_duplicate_per_source": max(duplicate_counts_by_source.values(), default=0),
+        "augmented_source_count": len(duplicate_counts_by_source),
+        "train_valid_overlap_group_count": len(train_valid_overlap_group_keys),
+        "train_valid_overlap_group_sample": sorted(train_valid_overlap_group_keys)[:20],
+        "output_files": {name: str(path) for name, path in output_paths.items()},
+        "strategy_parameters": strategy_parameters,
+        "source_id_duplicate_group_count": source_id_duplicate_group_count,
+        "source_id_renamed_row_count": source_id_renamed_row_count,
+        "source_id_renamed_sample": source_id_renamed_sample,
+    }

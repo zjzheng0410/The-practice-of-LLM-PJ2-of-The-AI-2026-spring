@@ -18,3 +18,12 @@
 - 将历史 `eval` 目录迁移为 `eval_result`，同步修正历史 metrics 内的 raw/wrong 输出路径。
 - 更新 README 与命令模板，统一使用 `python -m data_preprocess.prepare_data` 和 `python -m evaluation.*` 入口。
 
+## 2026-06-01 clean-008 训练数据重采样
+
+- 新增题型标签模块，统一识别弱答案类型、比例速度工程、单位换算、几何和多步题标签。
+- 新增 clean-008 增强入口，从 `train_sft_v2.json` 派生 `train_sft_clean008.json`，验证集继续固定为 `valid_sft_v2.json`。
+- 新增增强报告结构，记录增强前后分布、标签命中、复制原因、同题泄漏检查和策略参数。
+- 对训练集重复原始 id 做确定性重编号，并用 `original_id` 保留原始 id，保证 clean-008 输出 id 全局唯一。
+- 新增增强逻辑测试，覆盖复制规则、唯一 id、泄漏检查、输出保护和重复 id 重编号。
+- 生成 `train_sft_clean008.json` 与 `augment_report_clean008.json`，原始 10902 条，新增 2794 条，增强后 13696 条。
+- 增强比例为 1.2563，train/valid 同题 overlap 为 0，单源样本最多复制 1 次。
