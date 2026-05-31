@@ -1,16 +1,17 @@
 import argparse
 import json
-import random
-from collections import Counter, defaultdict
+from collections import defaultdict
 from pathlib import Path
 from typing import Any
 
 from answer_utils import classify_answer, normalize_answer
+from data_preprocess.report import build_clean_report, build_split_report
+from data_preprocess.split import split_train_valid_by_group
 
 
 DEFAULT_SEED = 20260530
 DEFAULT_VALID_SIZE = 1000
-DEFAULT_VERSION = "v1"
+DEFAULT_VERSION = "v2"
 DEFAULT_INPUT_FILE = "data/raw_data/train.json"
 DEFAULT_OUTPUT_DIR = "data/clean_data"
 
@@ -51,12 +52,20 @@ def load_json_list(path: Path) -> list[dict[str, Any]]:
     return data
 
 
+def write_json(path: Path, data: Any) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("w", encoding="utf-8") as file:
+        json.dump(data, file, ensure_ascii=False, indent=2)
+        file.write("\n")
+
+
 def _build_output_paths(output_dir: Path, version: str) -> dict[str, Path]:
     return {
         "train_clean": output_dir / f"train_clean_{version}.json",
         "train_sft": output_dir / f"train_sft_{version}.json",
         "valid_sft": output_dir / f"valid_sft_{version}.json",
         "clean_report": output_dir / f"clean_report_{version}.json",
+        "split_report": output_dir / f"split_report_{version}.json",
     }
 
 
@@ -64,17 +73,6 @@ def _ensure_can_write(paths: dict[str, Path], overwrite: bool) -> None:
     existing = [str(path) for path in paths.values() if path.exists()]
     if existing and not overwrite:
         raise FileExistsError("输出文件已存在，请使用 --overwrite：" + ", ".join(existing))
-
-
-def _duplicate_id_report(rows: list[dict[str, Any]]) -> dict[str, Any]:
-    ids = [str(row["id"]) for row in rows if "id" in row]
-    counts = Counter(ids)
-    duplicate_ids = [id_value for id_value, count in counts.items() if count > 1]
-    return {
-        "duplicate_id_count": len(duplicate_ids),
-        "duplicate_extra_rows": sum(counts[id_value] - 1 for id_value in duplicate_ids),
-        "duplicate_ids_sample": duplicate_ids[:50],
-    }
 
 
 def clean_rows(raw_rows: list[dict[str, Any]]) -> tuple[list[dict[str, Any]], dict[str, Any]]:
@@ -107,67 +105,38 @@ def clean_rows(raw_rows: list[dict[str, Any]]) -> tuple[list[dict[str, Any]], di
             }
         )
 
-    groups: dict[tuple[str, str], list[dict[str, Any]]] = defaultdict(list)
+    groups: dict[str, list[dict[str, Any]]] = defaultdict(list)
     for row in cleaned_candidates:
-        groups[(row["question"], row["instruction"])].append(row)
+        groups[row["question"]].append(row)
 
-    conflict_groups = []
-    conflict_keys: set[tuple[str, str]] = set()
-    for key, rows in groups.items():
+    conflict_groups: list[dict[str, Any]] = []
+    conflict_keys: set[str] = set()
+    for question, rows in groups.items():
         answers = sorted({row["answer"] for row in rows})
         if len(answers) > 1:
-            conflict_keys.add(key)
+            conflict_keys.add(question)
             conflict_groups.append(
                 {
-                    "question": key[0],
-                    "instruction": key[1],
+                    "question": question,
                     "answers": answers,
+                    "instructions": sorted({row["instruction"] for row in rows}),
                     "ids": [row["id"] for row in rows],
                     "row_count": len(rows),
                 }
             )
 
-    # 同题不同答案没有可靠依据判定哪条正确，整组丢弃，避免把冲突监督信号写入 SFT。
-    cleaned_rows = [
-        row for row in cleaned_candidates if (row["question"], row["instruction"]) not in conflict_keys
-    ]
-
-    report = {
-        "original_count": len(raw_rows),
-        "candidate_count": len(cleaned_candidates),
-        "cleaned_count": len(cleaned_rows),
-        "dropped_empty_answer_count": len(dropped_empty_answer),
-        "dropped_empty_answer_sample": dropped_empty_answer[:50],
-        "fixed_question_list_count": fixed_question_list_count,
-        "skipped_empty_question_part_count": skipped_empty_question_part_count,
-        "conflict_group_count": len(conflict_groups),
-        "conflict_drop_count": len(cleaned_candidates) - len(cleaned_rows),
-        "conflict_groups_sample": conflict_groups[:100],
-        "answer_type_distribution": dict(Counter(row["answer_type"] for row in cleaned_rows)),
-    }
-    report.update(_duplicate_id_report(raw_rows))
+    # 同一清洗后题目出现多个答案时整组丢弃，避免冲突监督信号进入训练或验证。
+    cleaned_rows = [row for row in cleaned_candidates if row["question"] not in conflict_keys]
+    report = build_clean_report(
+        raw_rows=raw_rows,
+        cleaned_candidates=cleaned_candidates,
+        cleaned_rows=cleaned_rows,
+        dropped_empty_answer=dropped_empty_answer,
+        fixed_question_list_count=fixed_question_list_count,
+        skipped_empty_question_part_count=skipped_empty_question_part_count,
+        conflict_groups=conflict_groups,
+    )
     return cleaned_rows, report
-
-
-def split_train_valid(
-    rows: list[dict[str, Any]], valid_size: int, seed: int
-) -> tuple[list[dict[str, Any]], list[dict[str, Any]]]:
-    if valid_size < 0:
-        raise ValueError("valid_size 不能为负数")
-    if valid_size > len(rows):
-        raise ValueError(f"valid_size={valid_size} 大于清洗后样本数={len(rows)}")
-    shuffled = list(rows)
-    random.Random(seed).shuffle(shuffled)
-    valid_rows = shuffled[:valid_size]
-    train_rows = shuffled[valid_size:]
-    return train_rows, valid_rows
-
-
-def write_json(path: Path, data: Any) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    with path.open("w", encoding="utf-8") as file:
-        json.dump(data, file, ensure_ascii=False, indent=2)
-        file.write("\n")
 
 
 def run_prepare_data(
@@ -182,25 +151,34 @@ def run_prepare_data(
     _ensure_can_write(output_paths, overwrite)
 
     raw_rows = load_json_list(input_file)
-    cleaned_rows, report = clean_rows(raw_rows)
-    train_rows, valid_rows = split_train_valid(cleaned_rows, valid_size=valid_size, seed=seed)
+    cleaned_rows, clean_report = clean_rows(raw_rows)
+    split_result = split_train_valid_by_group(cleaned_rows, valid_size=valid_size, seed=seed)
 
-    report.update(
+    clean_report.update(
         {
             "version": version,
-            "seed": seed,
-            "valid_size": valid_size,
-            "train_count": len(train_rows),
-            "valid_count": len(valid_rows),
             "output_files": {name: str(path) for name, path in output_paths.items()},
         }
     )
+    split_report = build_split_report(
+        version=version,
+        seed=seed,
+        target_valid_size=valid_size,
+        actual_train_size=len(split_result.train_rows),
+        actual_valid_size=len(split_result.valid_rows),
+        train_group_keys=split_result.train_group_keys,
+        valid_group_keys=split_result.valid_group_keys,
+        overlap_group_keys=split_result.overlap_group_keys,
+        dropped_conflict_group_count=clean_report["conflict_group_count"],
+        output_paths=output_paths,
+    )
 
     write_json(output_paths["train_clean"], cleaned_rows)
-    write_json(output_paths["train_sft"], train_rows)
-    write_json(output_paths["valid_sft"], valid_rows)
-    write_json(output_paths["clean_report"], report)
-    return report
+    write_json(output_paths["train_sft"], split_result.train_rows)
+    write_json(output_paths["valid_sft"], split_result.valid_rows)
+    write_json(output_paths["clean_report"], clean_report)
+    write_json(output_paths["split_report"], split_report)
+    return {"clean_report": clean_report, "split_report": split_report}
 
 
 def parse_args() -> argparse.Namespace:
@@ -208,7 +186,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--input-file", default=DEFAULT_INPUT_FILE, help="原始训练数据路径")
     parser.add_argument("--output-dir", default=DEFAULT_OUTPUT_DIR, help="清洗数据输出目录")
     parser.add_argument("--version", default=DEFAULT_VERSION, help="输出数据版本号")
-    parser.add_argument("--valid-size", type=int, default=DEFAULT_VALID_SIZE, help="固定验证集大小")
+    parser.add_argument("--valid-size", type=int, default=DEFAULT_VALID_SIZE, help="目标验证集大小")
     parser.add_argument("--seed", type=int, default=DEFAULT_SEED, help="固定切分随机种子")
     parser.add_argument("--overwrite", action="store_true", help="允许覆盖已存在的输出文件")
     return parser.parse_args()
@@ -216,7 +194,7 @@ def parse_args() -> argparse.Namespace:
 
 def main() -> None:
     args = parse_args()
-    report = run_prepare_data(
+    reports = run_prepare_data(
         input_file=Path(args.input_file),
         output_dir=Path(args.output_dir),
         version=args.version,
@@ -224,8 +202,9 @@ def main() -> None:
         seed=args.seed,
         overwrite=args.overwrite,
     )
-    print(json.dumps(report, ensure_ascii=False, indent=2))
+    print(json.dumps(reports, ensure_ascii=False, indent=2))
 
 
 if __name__ == "__main__":
     main()
+

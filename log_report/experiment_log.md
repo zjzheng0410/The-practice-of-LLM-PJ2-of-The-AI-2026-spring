@@ -3,6 +3,7 @@
 | ID | 类型 | 日期 | 模型 | 训练数据 | 方法 | Checkpoint | Epochs | Learning Rate | LoRA r | Max Length | 推理脚本 | 提交文件 | DF Score | 备注 |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | base-001 | baseline | 2026-05-30 | Qwen2.5-0.5B-Instruct | train.json | 原始 baseline：LoRA SFT，直接生成答案，无额外数据清洗和后处理 | ./output/Qwen/checkpoint-3750/ | 5 | 1e-4 | 8 | 384 | infer.py | submit/submit.csv | 0.14012500000 | 首次 baseline 提交分数，用作后续实验对照。 |
+| clean-001-final | data-cleaning | 2026-05-31 | Qwen2.5-0.5B-Instruct | data/clean_data/train_sft_v1.json | 清洗数据 baseline：使用 clean_data v1 训练，加载 clean-001 最后 checkpoint 生成提交并保留答案后处理 | output/clean-001/checkpoint-3410 | 5 | 1e-4 | 8 | 384 | infer.py | submit/clean_baseline.csv | 0.14025000000 | 本地 clean-001-final 验证集准确率 0.348；DF 比 base-001 提升 0.000125，截图提交时间 2026/05/31 00:16。 |
 
 ## 填写说明
 

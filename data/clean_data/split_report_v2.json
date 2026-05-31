@@ -1,0 +1,20 @@
+{
+  "version": "v2",
+  "seed": 20260530,
+  "target_valid_size": 1000,
+  "actual_train_size": 10902,
+  "actual_valid_size": 1000,
+  "train_group_count": 10672,
+  "valid_group_count": 978,
+  "dropped_conflict_group_count": 48,
+  "train_valid_overlap_group_count": 0,
+  "train_valid_overlap_group_sample": [],
+  "group_key_policy": "cleaned_question",
+  "output_files": {
+    "train_clean": "data/clean_data/train_clean_v2.json",
+    "train_sft": "data/clean_data/train_sft_v2.json",
+    "valid_sft": "data/clean_data/valid_sft_v2.json",
+    "clean_report": "data/clean_data/clean_report_v2.json",
+    "split_report": "data/clean_data/split_report_v2.json"
+  }
+}

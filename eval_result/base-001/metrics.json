@@ -57,6 +57,6 @@
   "experiment_id": "base-001",
   "valid_file": "data/valid_sft_v1.json",
   "checkpoint": "output/Qwen/checkpoint-3750",
-  "raw_output": "eval/base-001/raw.jsonl",
-  "wrong_output": "eval/base-001/wrong.jsonl"
+  "raw_output": "eval_result/base-001/raw.jsonl",
+  "wrong_output": "eval_result/base-001/wrong.jsonl"
 }

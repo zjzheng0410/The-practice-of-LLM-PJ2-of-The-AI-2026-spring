@@ -9,11 +9,11 @@ from peft import LoraConfig, TaskType, get_peft_model
 from swanlab.integration.huggingface import SwanLabCallback
 from transformers import AutoModelForCausalLM, AutoTokenizer, DataCollatorForSeq2Seq, Trainer, TrainingArguments
 
+from runtime_defaults import DEFAULT_BASE_MODEL
 
-DEFAULT_BASE_MODEL = "./Qwen/Qwen2.5-0.5B-Instruct"
 DEFAULT_OUTPUT_DIR = "./output/Qwen"
-DEFAULT_TRAIN_FILE = "data/clean_data/train_sft_v1.json"
-DEFAULT_VALID_FILE = "data/clean_data/valid_sft_v1.json"
+DEFAULT_TRAIN_FILE = "data/clean_data/train_sft_v2.json"
+DEFAULT_VALID_FILE = "data/clean_data/valid_sft_v2.json"
 LORA_TARGET_MODULES = ["q_proj", "k_proj", "v_proj", "o_proj", "gate_proj", "up_proj", "down_proj"]
 
 
@@ -128,6 +128,7 @@ def main() -> None:
         "logging_steps": 10,
         "num_train_epochs": args.epochs,
         "save_steps": args.save_steps,
+        "save_strategy": "steps",
         "learning_rate": args.learning_rate,
         "save_on_each_node": True,
         "gradient_checkpointing": True,
@@ -138,10 +139,6 @@ def main() -> None:
             {
                 "eval_strategy": "steps",
                 "eval_steps": args.save_steps,
-                "save_strategy": "steps",
-                "load_best_model_at_end": True,
-                "metric_for_best_model": "eval_loss",
-                "greater_is_better": False,
             }
         )
 

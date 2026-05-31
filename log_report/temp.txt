@@ -1,4 +1,4 @@
-# clean-001 之后的训练与 eval 命令记录
+# valid_v2 之后的训练与评估命令记录
 
 前提：
 
@@ -7,189 +7,116 @@
 
 ```bash
 cd /home/zjzheng/Lesson/AI_2026_springsemester/PJ2/Math_Solver
-```
-
-- 最新训练数据路径：
-  - train: `data/clean_data/train_sft_v1.json`
-  - valid: `data/clean_data/valid_sft_v1.json`
-- `qwen_ft.py` 使用 HuggingFace `Trainer`，`eval.py` / `infer.py` 都直接使用 `tqdm`。要看到动态 tqdm，建议在前台或 tmux/screen 里直接运行，不要把输出重定向到文件。
-- 若终端里曾设置过禁用进度条，先执行：
-
-```bash
 unset TQDM_DISABLE
 export PYTHONUNBUFFERED=1
 ```
 
-## clean-002：只改 epochs，从 5 改成 3
+## 生成 valid_v2
 
-目的：判断 clean-001 的 5 轮是否过拟合。
+```bash
+python -m data_preprocess.prepare_data \
+  --input-file data/raw_data/train.json \
+  --output-dir data/clean_data \
+  --version v2 \
+  --valid-size 1000 \
+  --seed 20260530
+```
+
+检查切分报告：
+
+```bash
+python -m json.tool data/clean_data/split_report_v2.json
+```
+
+`train_valid_overlap_group_count` 必须为 `0`。
+
+## v2 训练模板
 
 ```bash
 python -u qwen_ft.py \
-  --train-file data/clean_data/train_sft_v1.json \
-  --valid-file data/clean_data/valid_sft_v1.json \
-  --output-dir output/clean-002 \
-  --experiment-id clean-002 \
-  --epochs 3 \
+  --train-file data/clean_data/train_sft_v2.json \
+  --valid-file data/clean_data/valid_sft_v2.json \
+  --output-dir output/clean-006 \
+  --experiment-id clean-006 \
+  --epochs 5 \
   --learning-rate 1e-4 \
   --max-length 384 \
   --lora-r 8 \
   --save-steps 1000
 ```
 
-## clean-003：只改学习率，从 1e-4 改成 5e-5
+训练阶段只产出候选 checkpoint；最终选择以 `valid_v2` 生成准确率为准，不再引用 `trainer_state.json` 的 `best_model_checkpoint`。
 
-目的：判断学习率是否过高导致答案格式或计算能力不稳。
-
-```bash
-python -u qwen_ft.py \
-  --train-file data/clean_data/train_sft_v1.json \
-  --valid-file data/clean_data/valid_sft_v1.json \
-  --output-dir output/clean-003 \
-  --experiment-id clean-003 \
-  --epochs 5 \
-  --learning-rate 5e-5 \
-  --max-length 384 \
-  --lora-r 8 \
-  --save-steps 1000
-```
-
-## clean-004：只改 max length，从 384 改成 512
-
-目的：判断较长题目被截断是否影响验证集准确率。
+## 重新评估三个 final checkpoint
 
 ```bash
-python -u qwen_ft.py \
-  --train-file data/clean_data/train_sft_v1.json \
-  --valid-file data/clean_data/valid_sft_v1.json \
-  --output-dir output/clean-004 \
-  --experiment-id clean-004 \
-  --epochs 5 \
-  --learning-rate 1e-4 \
-  --max-length 512 \
-  --lora-r 8 \
-  --save-steps 1000
-```
-
-## 如何 eval 已训练好的 clean-001
-
-当前 `qwen_ft.py` 开启了 `load_best_model_at_end=True`，但磁盘上需要手动指定要评估的 checkpoint。先从 `trainer_state.json` 里看 best checkpoint：
-
-```bash
-python - <<'PY'
-import json
-from pathlib import Path
-
-state = json.loads(Path("output/clean-001/checkpoint-3410/trainer_state.json").read_text())
-print("best_model_checkpoint =", state["best_model_checkpoint"])
-print("best_metric(eval_loss) =", state["best_metric"])
-print("global_step =", state["global_step"])
-PY
-```
-
-本机当前 clean-001 记录显示 best checkpoint 是：
-
-```text
-output/clean-001/checkpoint-1000
-```
-
-评估 clean-001 的 best checkpoint：
-
-```bash
-python -u eval.py \
-  --checkpoint output/clean-003/checkpoint-1000 \
-  --valid-file data/clean_data/valid_sft_v1.json \
-  --experiment-id clean-003 \
-  --max-new-tokens 32 \
-  --output-dir eval
-```
-
-如果也想对比 clean-001 最后一个 checkpoint：
-
-```bash
-python -u eval.py \
+python -m evaluation.evaluate_checkpoint \
   --checkpoint output/clean-001/checkpoint-3410 \
-  --valid-file data/clean_data/valid_sft_v1.json \
+  --valid-file data/clean_data/valid_sft_v2.json \
   --experiment-id clean-001-final \
   --max-new-tokens 32 \
-  --output-dir eval
+  --output-dir eval_result \
+  --split-name valid_v2
 ```
 
-## clean-002/003/004 训练完成后的 eval 模板
-
-每个实验训练完成后，把下面的 `EXP` 改成对应实验编号；`BEST_CKPT` 用该实验最后一个 checkpoint 里的 `trainer_state.json` 查出来。
-
 ```bash
-EXP=clean-002
-LAST_CKPT=$(find "output/${EXP}" -maxdepth 1 -type d -name 'checkpoint-*' | sort -V | tail -1)
-BEST_CKPT=$(python - <<PY
-import json
-from pathlib import Path
-state = json.loads((Path("${LAST_CKPT}") / "trainer_state.json").read_text())
-print(state["best_model_checkpoint"])
-PY
-)
-echo "LAST_CKPT=${LAST_CKPT}"
-echo "BEST_CKPT=${BEST_CKPT}"
-
-python -u eval.py \
-  --checkpoint "${BEST_CKPT}" \
-  --valid-file data/clean_data/valid_sft_v1.json \
-  --experiment-id "${EXP}" \
+python -m evaluation.evaluate_checkpoint \
+  --checkpoint output/clean-004/checkpoint-3410 \
+  --valid-file data/clean_data/valid_sft_v2.json \
+  --experiment-id clean-004-final \
   --max-new-tokens 32 \
-  --output-dir eval
+  --output-dir eval_result \
+  --split-name valid_v2
 ```
-
-需要评估 `clean-003` 或 `clean-004` 时，只改第一行：
 
 ```bash
-EXP=clean-003
-# 或
-EXP=clean-004
+python -m evaluation.evaluate_checkpoint \
+  --checkpoint output/clean-005/checkpoint-4774 \
+  --valid-file data/clean_data/valid_sft_v2.json \
+  --experiment-id clean-005-final \
+  --max-new-tokens 32 \
+  --output-dir eval_result \
+  --split-name valid_v2
 ```
 
-## 如果要同步到另一个工作区/机器再 eval
+## 多 checkpoint 评估模板
 
-eval 依赖的不只是 `eval.py`，还依赖最新的 `infer.py`、`answer_utils.py`、验证集和对应 checkpoint。同步前确认目标工作区也在 `Math_Solver` 根目录结构下。
+```bash
+python -m evaluation.evaluate_checkpoints \
+  --experiment-dir output/clean-005 \
+  --experiment-id clean-005 \
+  --valid-file data/clean_data/valid_sft_v2.json \
+  --max-new-tokens 32 \
+  --output-dir eval_result \
+  --split-name valid_v2
+```
 
-最少需要同步这些路径：
+输出位置：
+
+```text
+eval_result/valid_v2/clean-005/
+  checkpoint-1000/
+  checkpoint-2000/
+  checkpoint-3000/
+  checkpoint-4000/
+  checkpoint-4774/
+  ranking.csv
+  ranking.json
+  best_checkpoint.json
+```
+
+## 同步到另一台机器评估
+
+最少同步这些路径：
 
 ```text
 answer_utils.py
+generation.py
 infer.py
-eval.py
-data/clean_data/valid_sft_v1.json
-output/clean-001/checkpoint-1000/
+evaluation/
+data/clean_data/valid_sft_v2.json
+output/<experiment>/checkpoint-<step>/
 ```
 
-如果在远端机器 eval，把 `<REMOTE>` 和 `<REMOTE_MATH_SOLVER_DIR>` 替换成实际地址：
+远端进入同一环境和 `Math_Solver` 目录后，使用 `python -m evaluation.evaluate_checkpoint` 或 `python -m evaluation.evaluate_checkpoints` 执行评估。
 
-```bash
-rsync -av --relative \
-  answer_utils.py infer.py eval.py \
-  data/clean_data/valid_sft_v1.json \
-  output/clean-001/checkpoint-1000 \
-  <REMOTE>:<REMOTE_MATH_SOLVER_DIR>/
-```
-
-到远端后进入同一个 conda 环境和 `Math_Solver` 目录，再运行：
-
-```bash
-python -u eval.py \
-  --checkpoint output/clean-001/checkpoint-1000 \
-  --valid-file data/clean_data/valid_sft_v1.json \
-  --experiment-id clean-001 \
-  --max-new-tokens 32 \
-  --output-dir eval
-```
-
-注意：如果只有一张 GPU，不建议一边训练 clean-002 一边 eval clean-001，容易显存不足；有空闲 GPU 时可以另开终端并指定 GPU，例如：
-
-```bash
-CUDA_VISIBLE_DEVICES=1 python -u eval.py \
-  --checkpoint output/clean-001/checkpoint-1000 \
-  --valid-file data/clean_data/valid_sft_v1.json \
-  --experiment-id clean-001 \
-  --max-new-tokens 32 \
-  --output-dir eval
-```

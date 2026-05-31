@@ -1,22 +1,22 @@
 {
   "total": 1000,
-  "correct": 311,
-  "accuracy": 0.311,
+  "correct": 247,
+  "accuracy": 0.247,
   "by_answer_type": {
     "decimal": {
       "total": 102,
-      "correct": 16,
-      "accuracy": 0.1568627450980392
+      "correct": 11,
+      "accuracy": 0.10784313725490197
     },
     "fraction": {
       "total": 32,
-      "correct": 6,
-      "accuracy": 0.1875
+      "correct": 4,
+      "accuracy": 0.125
     },
     "integer": {
       "total": 840,
-      "correct": 279,
-      "accuracy": 0.33214285714285713
+      "correct": 223,
+      "accuracy": 0.2654761904761905
     },
     "mixed_fraction": {
       "total": 1,
@@ -25,8 +25,8 @@
     },
     "percent": {
       "total": 24,
-      "correct": 10,
-      "accuracy": 0.4166666666666667
+      "correct": 9,
+      "accuracy": 0.375
     },
     "yes_no": {
       "total": 1,
@@ -39,24 +39,24 @@
   "special_metrics": {
     "fraction": {
       "total": 33,
-      "correct": 6,
-      "accuracy": 0.18181818181818182
+      "correct": 4,
+      "accuracy": 0.12121212121212122
     },
     "percent": {
       "total": 24,
-      "correct": 10,
-      "accuracy": 0.4166666666666667
+      "correct": 9,
+      "accuracy": 0.375
     },
     "long_question": {
       "total": 11,
-      "correct": 0,
-      "accuracy": 0.0
+      "correct": 1,
+      "accuracy": 0.09090909090909091
     }
   },
   "long_question_threshold": 100,
-  "experiment_id": "clean-002-final",
+  "experiment_id": "clean-004",
   "valid_file": "data/clean_data/valid_sft_v1.json",
-  "checkpoint": "output/clean-002/checkpoint-2046",
-  "raw_output": "eval/clean-002-final/raw.jsonl",
-  "wrong_output": "eval/clean-002-final/wrong.jsonl"
+  "checkpoint": "output/clean-004/checkpoint-1000",
+  "raw_output": "eval_result/clean-004/raw.jsonl",
+  "wrong_output": "eval_result/clean-004/wrong.jsonl"
 }
