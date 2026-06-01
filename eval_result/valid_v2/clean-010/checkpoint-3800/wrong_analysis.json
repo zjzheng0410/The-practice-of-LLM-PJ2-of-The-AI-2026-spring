@@ -1,0 +1,95 @@
+{
+  "total_wrong": 652,
+  "tag_counts": {
+    "answer_type_mismatch": {
+      "count": 63,
+      "ratio": 0.09662576687116564
+    },
+    "geometry_keyword": {
+      "count": 71,
+      "ratio": 0.10889570552147239
+    },
+    "long_question": {
+      "count": 5,
+      "ratio": 0.007668711656441718
+    },
+    "multi_step_keyword": {
+      "count": 244,
+      "ratio": 0.37423312883435583
+    },
+    "numeric_value_error": {
+      "count": 589,
+      "ratio": 0.9033742331288344
+    },
+    "postprocess_failure": {
+      "count": 1,
+      "ratio": 0.0015337423312883436
+    },
+    "rate_ratio_keyword": {
+      "count": 36,
+      "ratio": 0.05521472392638037
+    },
+    "unit_scale_suspect": {
+      "count": 20,
+      "ratio": 0.03067484662576687
+    }
+  },
+  "by_answer_type": {
+    "decimal": 82,
+    "fraction": 29,
+    "integer": 519,
+    "multi_answer": 1,
+    "percent": 21
+  },
+  "by_pred_answer_type": {
+    "decimal": 78,
+    "fraction": 24,
+    "integer": 526,
+    "mixed_fraction": 1,
+    "percent": 21,
+    "unknown": 1,
+    "yes_no": 1
+  },
+  "by_extract_status": {
+    "matched": 651,
+    "unknown_short": 1
+  },
+  "answer_type_x_attribution_tag": {
+    "decimal": {
+      "answer_type_mismatch": 28,
+      "geometry_keyword": 28,
+      "multi_step_keyword": 30,
+      "numeric_value_error": 54,
+      "rate_ratio_keyword": 2,
+      "unit_scale_suspect": 1
+    },
+    "fraction": {
+      "answer_type_mismatch": 6,
+      "multi_step_keyword": 19,
+      "numeric_value_error": 23,
+      "rate_ratio_keyword": 5,
+      "unit_scale_suspect": 1
+    },
+    "integer": {
+      "answer_type_mismatch": 27,
+      "geometry_keyword": 42,
+      "long_question": 4,
+      "multi_step_keyword": 184,
+      "numeric_value_error": 492,
+      "postprocess_failure": 1,
+      "rate_ratio_keyword": 29,
+      "unit_scale_suspect": 17
+    },
+    "multi_answer": {
+      "answer_type_mismatch": 1
+    },
+    "percent": {
+      "answer_type_mismatch": 1,
+      "geometry_keyword": 1,
+      "long_question": 1,
+      "multi_step_keyword": 11,
+      "numeric_value_error": 20,
+      "unit_scale_suspect": 1
+    }
+  }
+}

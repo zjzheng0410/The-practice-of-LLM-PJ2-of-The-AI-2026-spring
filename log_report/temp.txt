@@ -403,3 +403,82 @@ python -m data_preprocess.augment_train \
 ```bash
 python -c "import json; from pathlib import Path; report=json.loads(Path('data/clean_data/augment_report_clean010.json').read_text(encoding='utf-8')); rows=json.loads(Path('data/clean_data/train_sft_clean010.json').read_text(encoding='utf-8')); keys=['policy','original_train_count','added_count','augmented_train_count','train_valid_overlap_group_count','max_duplicate_per_source','source_id_duplicate_group_count','source_id_renamed_row_count']; [print(f'{key}={report[key]}') for key in keys]; ids=[row['id'] for row in rows]; print('duplicate_id_count=' + str(len(ids) - len(set(ids))))"
 ```
+
+训练命令：
+
+```bash
+python -u qwen_ft.py \
+  --train-file data/clean_data/train_sft_clean010.json \
+  --valid-file data/clean_data/valid_sft_v2.json \
+  --output-dir output/clean-010 \
+  --experiment-id clean-010 \
+  --epochs 5 \
+  --learning-rate 1e-4 \
+  --max-length 512 \
+  --lora-r 8 \
+  --save-steps 1000
+```
+
+对 `clean-010` 的所有 checkpoint 做生成式评估与 ranking：
+
+```bash
+python -m evaluation.evaluate_checkpoints \
+  --experiment-dir output/clean-010 \
+  --experiment-id clean-010 \
+  --valid-file data/clean_data/valid_sft_v2.json \
+  --max-new-tokens 32 \
+  --output-dir eval_result \
+  --split-name valid_v2
+```
+
+查看 `clean-010` 最佳 checkpoint：
+
+```bash
+python -m json.tool eval_result/valid_v2/clean-010/best_checkpoint.json
+```
+
+## clean-007 与 clean-010 对比
+
+汇总两个实验的 best checkpoint：
+
+```bash
+python - <<'PY'
+import json
+from pathlib import Path
+
+experiments = ["clean-007", "clean-010"]
+for exp in experiments:
+    path = Path("eval_result/valid_v2") / exp / "best_checkpoint.json"
+    data = json.loads(path.read_text(encoding="utf-8"))
+    print(
+        exp,
+        "checkpoint=", data["selected_checkpoint"],
+        "step=", data["selected_step"],
+        "accuracy=", data["accuracy"],
+        "correct=", data["correct"],
+        "total=", data["total"],
+    )
+PY
+```
+
+查看两个实验 ranking 前 5 名：
+
+```bash
+python - <<'PY'
+import json
+from pathlib import Path
+
+for exp in ["clean-007", "clean-010"]:
+    ranking_path = Path("eval_result/valid_v2") / exp / "ranking.json"
+    ranking = json.loads(ranking_path.read_text(encoding="utf-8"))
+    print(f"\n{exp} top 5")
+    for row in ranking[:5]:
+        print(
+            row["checkpoint_name"],
+            "accuracy=", row["accuracy"],
+            "postprocess_failure_rate=", row["postprocess_failure_rate"],
+            "correct=", row["correct"],
+            "total=", row["total"],
+        )
+PY
+```

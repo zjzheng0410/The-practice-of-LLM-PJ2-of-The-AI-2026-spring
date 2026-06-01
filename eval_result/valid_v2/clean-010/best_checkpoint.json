@@ -1,0 +1,12 @@
+{
+  "experiment_id": "clean-010",
+  "valid_file": "data/clean_data/valid_sft_v2.json",
+  "selection_metric": "valid_v2_generation_accuracy",
+  "selected_checkpoint": "output/clean-010/checkpoint-3800",
+  "selected_step": 3800,
+  "accuracy": 0.348,
+  "correct": 348,
+  "total": 1000,
+  "tie_break_policy": "accuracy 降序，postprocess_failure_rate 升序，step 升序",
+  "all_ranking_file": "eval_result/valid_v2/clean-010/ranking.json"
+}
