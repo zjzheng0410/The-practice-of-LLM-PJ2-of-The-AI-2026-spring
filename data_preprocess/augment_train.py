@@ -5,15 +5,14 @@ from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
-from data_preprocess.feature_tags import (
-    FEATURE_TAG_ORDER,
-    GEOMETRY_KEYWORDS,
-    MULTI_STEP_KEYWORDS,
-    RATE_RATIO_KEYWORDS,
-    UNIT_SCALE_KEYWORDS,
-    WEAK_ANSWER_TYPES,
-    build_feature_tags,
+from data_preprocess.augment_policies import (
+    AugmentPolicy,
+    CLEAN008_POLICY,
+    UNIT_SCALE_FOCUS_TAGS,
+    policy_aliases,
+    resolve_policy,
 )
+from data_preprocess.feature_tags import build_feature_tags
 from data_preprocess.prepare_data import load_json_list, write_json
 from data_preprocess.report import build_augment_report
 from data_preprocess.split import build_group_key
@@ -23,16 +22,15 @@ DEFAULT_INPUT_TRAIN = "data/clean_data/train_sft_v2.json"
 DEFAULT_VALID_FILE = "data/clean_data/valid_sft_v2.json"
 DEFAULT_OUTPUT_TRAIN = "data/clean_data/train_sft_clean008.json"
 DEFAULT_REPORT_FILE = "data/clean_data/augment_report_clean008.json"
-DEFAULT_POLICY_ALIAS = "clean008"
-CLEAN008_POLICY_NAME = "clean008_weak_type_oversample_v1"
-AUGMENT_ID_SUFFIX = "__clean008_aug1"
-MAX_DUPLICATE_PER_SOURCE = 1
+DEFAULT_POLICY_ALIAS = CLEAN008_POLICY.alias
+CLEAN008_POLICY_NAME = CLEAN008_POLICY.name
+AUGMENT_ID_SUFFIX = CLEAN008_POLICY.augment_id_suffix
+MAX_DUPLICATE_PER_SOURCE = CLEAN008_POLICY.max_duplicate_per_source
 ORIGINAL_ID_FIELD = "original_id"
-DUPLICATE_SOURCE_ID_SUFFIX = "__clean008_src"
+DUPLICATE_SOURCE_ID_SUFFIX = CLEAN008_POLICY.duplicate_source_id_suffix
 
 TRAIN_REQUIRED_FIELDS = ("id", "question", "answer", "instruction", "answer_type")
-AUGMENT_REASON_ORDER = ("weak_answer_type", "rate_ratio", "unit_scale_focus")
-UNIT_SCALE_FOCUS_TAGS = ("weak_answer_type", "rate_ratio", "geometry")
+AUGMENT_REASON_ORDER = CLEAN008_POLICY.reason_order
 
 
 @dataclass(frozen=True)
@@ -50,12 +48,6 @@ class SourceIdNormalizeResult:
     duplicate_group_count: int
     renamed_row_count: int
     renamed_id_sample: list[dict[str, Any]]
-
-
-def _resolve_policy(policy: str) -> str:
-    if policy != DEFAULT_POLICY_ALIAS:
-        raise ValueError(f"仅支持 --policy {DEFAULT_POLICY_ALIAS}")
-    return CLEAN008_POLICY_NAME
 
 
 def _ensure_can_write(output_paths: dict[str, Path], overwrite: bool) -> None:
@@ -82,7 +74,10 @@ def _ensure_unique_ids(rows: list[dict[str, Any]], source_name: str) -> None:
         raise ValueError(f"{source_name} 存在重复 id：{duplicate_ids[:20]}")
 
 
-def normalize_duplicate_source_ids(train_rows: list[dict[str, Any]]) -> SourceIdNormalizeResult:
+def normalize_duplicate_source_ids(
+    train_rows: list[dict[str, Any]],
+    policy: AugmentPolicy = CLEAN008_POLICY,
+) -> SourceIdNormalizeResult:
     id_counts = Counter(str(row["id"]) for row in train_rows)
     duplicate_ids = {id_value for id_value, count in id_counts.items() if count > 1}
     seen_duplicate_ids: Counter[str] = Counter()
@@ -94,7 +89,7 @@ def normalize_duplicate_source_ids(train_rows: list[dict[str, Any]]) -> SourceId
         normalized_row = dict(row)
         if source_id in duplicate_ids:
             seen_duplicate_ids[source_id] += 1
-            new_id = f"{source_id}{DUPLICATE_SOURCE_ID_SUFFIX}{seen_duplicate_ids[source_id]}"
+            new_id = f"{source_id}{policy.duplicate_source_id_suffix}{seen_duplicate_ids[source_id]}"
             # 仅重复原始 id 参与重编号，并保留原始 id 便于回溯。
             normalized_row[ORIGINAL_ID_FIELD] = source_id
             normalized_row["id"] = new_id
@@ -125,24 +120,20 @@ def find_train_valid_overlap(
     return _build_group_keys(train_rows) & _build_group_keys(valid_rows)
 
 
-def build_augment_reasons(feature_tags: list[str]) -> list[str]:
-    feature_tag_set = set(feature_tags)
-    reason_flags = {
-        "weak_answer_type": "weak_answer_type" in feature_tag_set,
-        "rate_ratio": "rate_ratio" in feature_tag_set,
-        "unit_scale_focus": "unit_scale" in feature_tag_set
-        and any(tag in feature_tag_set for tag in UNIT_SCALE_FOCUS_TAGS),
-    }
-    return [reason for reason in AUGMENT_REASON_ORDER if reason_flags[reason]]
+def build_augment_reasons(
+    feature_tags: list[str],
+    policy: AugmentPolicy = CLEAN008_POLICY,
+) -> list[str]:
+    return policy.build_reasons(feature_tags)
 
 
-def _build_augmented_id(source_id: str) -> str:
-    return source_id + AUGMENT_ID_SUFFIX
+def _build_augmented_id(source_id: str, policy: AugmentPolicy) -> str:
+    return source_id + policy.augment_id_suffix
 
 
 def build_augmented_train_rows(
     train_rows: list[dict[str, Any]],
-    policy_name: str = CLEAN008_POLICY_NAME,
+    policy: AugmentPolicy = CLEAN008_POLICY,
 ) -> AugmentBuildResult:
     output_rows = [dict(row) for row in train_rows]
     added_rows: list[dict[str, Any]] = []
@@ -156,20 +147,20 @@ def build_augmented_train_rows(
         for tag in feature_tags:
             feature_tag_counts[tag] += 1
 
-        augment_reasons = build_augment_reasons(feature_tags)
+        augment_reasons = build_augment_reasons(feature_tags, policy=policy)
         if not augment_reasons:
             continue
 
         source_id = row["id"]
-        if duplicate_counts_by_source[source_id] >= MAX_DUPLICATE_PER_SOURCE:
+        if duplicate_counts_by_source[source_id] >= policy.max_duplicate_per_source:
             raise ValueError(f"源样本重复复制超过限制：{source_id}")
 
         # 单个源样本最多复制一次，多原因只记录到 augment_reason。
         augmented_row = dict(row)
-        augmented_row["id"] = _build_augmented_id(source_id)
+        augmented_row["id"] = _build_augmented_id(source_id, policy)
         augmented_row["source_id"] = source_id
         augmented_row["is_augmented"] = True
-        augmented_row["augment_policy"] = policy_name
+        augmented_row["augment_policy"] = policy.name
         augmented_row["augment_reason"] = augment_reasons
         augmented_row["feature_tags"] = feature_tags
         added_rows.append(augmented_row)
@@ -188,33 +179,17 @@ def build_augmented_train_rows(
     )
 
 
-def _build_strategy_parameters() -> dict[str, Any]:
-    return {
-        "policy_alias": DEFAULT_POLICY_ALIAS,
-        "policy_name": CLEAN008_POLICY_NAME,
-        "weak_answer_types": list(WEAK_ANSWER_TYPES),
-        "rate_ratio_keywords": list(RATE_RATIO_KEYWORDS),
-        "unit_scale_keywords": list(UNIT_SCALE_KEYWORDS),
-        "geometry_keywords": list(GEOMETRY_KEYWORDS),
-        "multi_step_keywords": list(MULTI_STEP_KEYWORDS),
-        "feature_tag_order": list(FEATURE_TAG_ORDER),
-        "augment_reason_order": list(AUGMENT_REASON_ORDER),
-        "unit_scale_focus_tags": list(UNIT_SCALE_FOCUS_TAGS),
-        "max_duplicate_per_source": MAX_DUPLICATE_PER_SOURCE,
-        "augment_id_suffix": AUGMENT_ID_SUFFIX,
-        "duplicate_source_id_suffix": DUPLICATE_SOURCE_ID_SUFFIX,
-        "original_id_field": ORIGINAL_ID_FIELD,
-        "multi_step_triggers_copy": False,
-    }
+def _build_strategy_parameters(policy: AugmentPolicy) -> dict[str, Any]:
+    return policy.strategy_parameters(original_id_field=ORIGINAL_ID_FIELD)
 
 
-def _validate_augment_report(report: dict[str, Any]) -> None:
+def _validate_augment_report(report: dict[str, Any], policy: AugmentPolicy) -> None:
     if report["train_valid_overlap_group_count"] != 0:
         raise ValueError("train/valid 存在同题泄漏")
     expected_count = report["original_train_count"] + report["added_count"]
     if report["augmented_train_count"] != expected_count:
         raise ValueError("增强后样本数与报告 added_count 不一致")
-    if report["max_duplicate_per_source"] > MAX_DUPLICATE_PER_SOURCE:
+    if report["max_duplicate_per_source"] > policy.max_duplicate_per_source:
         raise ValueError("单个源样本复制次数超过限制")
 
 
@@ -226,7 +201,7 @@ def run_augment_train(
     policy: str = DEFAULT_POLICY_ALIAS,
     overwrite: bool = False,
 ) -> dict[str, Any]:
-    policy_name = _resolve_policy(policy)
+    augment_policy = resolve_policy(policy)
     output_paths = {"output_train": output_train, "augment_report": report_file}
     _ensure_can_write(output_paths, overwrite=overwrite)
 
@@ -234,16 +209,16 @@ def run_augment_train(
     valid_rows = load_json_list(valid_file)
     for row_index, row in enumerate(train_rows):
         _validate_train_row(row, row_index)
-    source_id_result = normalize_duplicate_source_ids(train_rows)
+    source_id_result = normalize_duplicate_source_ids(train_rows, policy=augment_policy)
     normalized_train_rows = source_id_result.rows
 
     overlap_group_keys = find_train_valid_overlap(normalized_train_rows, valid_rows)
     if overlap_group_keys:
         raise ValueError(f"train/valid 存在同题泄漏：{sorted(overlap_group_keys)[:20]}")
 
-    build_result = build_augmented_train_rows(normalized_train_rows, policy_name=policy_name)
+    build_result = build_augmented_train_rows(normalized_train_rows, policy=augment_policy)
     report = build_augment_report(
-        policy=policy_name,
+        policy=augment_policy.name,
         input_train_file=input_train,
         valid_file=valid_file,
         output_train_file=output_train,
@@ -255,12 +230,12 @@ def run_augment_train(
         duplicate_counts_by_source=build_result.duplicate_counts_by_source,
         train_valid_overlap_group_keys=overlap_group_keys,
         output_paths=output_paths,
-        strategy_parameters=_build_strategy_parameters(),
+        strategy_parameters=_build_strategy_parameters(augment_policy),
         source_id_duplicate_group_count=source_id_result.duplicate_group_count,
         source_id_renamed_row_count=source_id_result.renamed_row_count,
         source_id_renamed_sample=source_id_result.renamed_id_sample,
     )
-    _validate_augment_report(report)
+    _validate_augment_report(report, augment_policy)
 
     write_json(output_train, build_result.output_rows)
     write_json(report_file, report)
@@ -273,7 +248,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--valid-file", default=DEFAULT_VALID_FILE, help="固定验证集 JSON 路径")
     parser.add_argument("--output-train", default=DEFAULT_OUTPUT_TRAIN, help="增强训练集输出路径")
     parser.add_argument("--report-file", default=DEFAULT_REPORT_FILE, help="增强报告输出路径")
-    parser.add_argument("--policy", default=DEFAULT_POLICY_ALIAS, choices=[DEFAULT_POLICY_ALIAS], help="增强策略")
+    parser.add_argument("--policy", default=DEFAULT_POLICY_ALIAS, choices=policy_aliases(), help="增强策略")
     parser.add_argument("--overwrite", action="store_true", help="允许覆盖已存在的输出文件")
     return parser.parse_args()
 

@@ -378,3 +378,28 @@ for exp in ["clean-006", "clean-007", "clean-008"]:
         )
 PY
 ```
+
+## clean-010：几何增强策略数据生成
+
+单测：
+
+```bash
+python -m unittest discover -s test
+```
+
+生成数据：
+
+```bash
+python -m data_preprocess.augment_train \
+  --input-train data/clean_data/train_sft_v2.json \
+  --valid-file data/clean_data/valid_sft_v2.json \
+  --output-train data/clean_data/train_sft_clean010.json \
+  --report-file data/clean_data/augment_report_clean010.json \
+  --policy clean010
+```
+
+检查报告：
+
+```bash
+python -c "import json; from pathlib import Path; report=json.loads(Path('data/clean_data/augment_report_clean010.json').read_text(encoding='utf-8')); rows=json.loads(Path('data/clean_data/train_sft_clean010.json').read_text(encoding='utf-8')); keys=['policy','original_train_count','added_count','augmented_train_count','train_valid_overlap_group_count','max_duplicate_per_source','source_id_duplicate_group_count','source_id_renamed_row_count']; [print(f'{key}={report[key]}') for key in keys]; ids=[row['id'] for row in rows]; print('duplicate_id_count=' + str(len(ids) - len(set(ids))))"
+```

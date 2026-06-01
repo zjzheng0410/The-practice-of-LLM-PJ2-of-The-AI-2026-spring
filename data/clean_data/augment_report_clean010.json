@@ -1,0 +1,146 @@
+{
+  "policy": "clean010_geometry_oversample_v1",
+  "input_train_file": "data/clean_data/train_sft_v2.json",
+  "valid_file": "data/clean_data/valid_sft_v2.json",
+  "output_train_file": "data/clean_data/train_sft_clean010.json",
+  "original_train_count": 10902,
+  "augmented_train_count": 12150,
+  "added_count": 1248,
+  "answer_type_distribution_before": {
+    "decimal": 1076,
+    "fraction": 350,
+    "integer": 9154,
+    "mixed_fraction": 21,
+    "multi_answer": 2,
+    "percent": 290,
+    "yes_no": 9
+  },
+  "answer_type_distribution_after": {
+    "decimal": 1467,
+    "fraction": 376,
+    "integer": 9979,
+    "mixed_fraction": 21,
+    "multi_answer": 2,
+    "percent": 296,
+    "yes_no": 9
+  },
+  "feature_tag_counts": {
+    "geometry": 1248,
+    "multi_step": 3441,
+    "rate_ratio": 638,
+    "unit_scale": 4531,
+    "weak_answer_type": 1447
+  },
+  "augment_reason_counts": {
+    "geometry_focus": 1248
+  },
+  "max_duplicate_per_source": 1,
+  "augmented_source_count": 1248,
+  "train_valid_overlap_group_count": 0,
+  "train_valid_overlap_group_sample": [],
+  "output_files": {
+    "output_train": "data/clean_data/train_sft_clean010.json",
+    "augment_report": "data/clean_data/augment_report_clean010.json"
+  },
+  "strategy_parameters": {
+    "policy_alias": "clean010",
+    "policy_name": "clean010_geometry_oversample_v1",
+    "trigger_tag": "geometry",
+    "augment_reason": "geometry_focus",
+    "feature_tag_order": [
+      "weak_answer_type",
+      "rate_ratio",
+      "unit_scale",
+      "geometry",
+      "multi_step"
+    ],
+    "geometry_keywords": [
+      "面积",
+      "周长",
+      "体积",
+      "圆柱",
+      "半径",
+      "直径",
+      "长方体",
+      "正方体"
+    ],
+    "augment_reason_order": [
+      "geometry_focus"
+    ],
+    "max_duplicate_per_source": 1,
+    "augment_id_suffix": "__clean010_aug1",
+    "duplicate_source_id_suffix": "__clean010_src",
+    "original_id_field": "original_id",
+    "copy_unit_scale_only": false,
+    "copy_weak_answer_type_only": false,
+    "copy_rate_ratio_only": false,
+    "copy_multi_step_only": false
+  },
+  "source_id_duplicate_group_count": 9,
+  "source_id_renamed_row_count": 18,
+  "source_id_renamed_sample": [
+    {
+      "original_id": "10352",
+      "renamed_ids": [
+        "10352__clean010_src1",
+        "10352__clean010_src2"
+      ]
+    },
+    {
+      "original_id": "10484",
+      "renamed_ids": [
+        "10484__clean010_src1",
+        "10484__clean010_src2"
+      ]
+    },
+    {
+      "original_id": "10541",
+      "renamed_ids": [
+        "10541__clean010_src1",
+        "10541__clean010_src2"
+      ]
+    },
+    {
+      "original_id": "10569",
+      "renamed_ids": [
+        "10569__clean010_src1",
+        "10569__clean010_src2"
+      ]
+    },
+    {
+      "original_id": "10670",
+      "renamed_ids": [
+        "10670__clean010_src1",
+        "10670__clean010_src2"
+      ]
+    },
+    {
+      "original_id": "10794",
+      "renamed_ids": [
+        "10794__clean010_src1",
+        "10794__clean010_src2"
+      ]
+    },
+    {
+      "original_id": "10838",
+      "renamed_ids": [
+        "10838__clean010_src1",
+        "10838__clean010_src2"
+      ]
+    },
+    {
+      "original_id": "10959",
+      "renamed_ids": [
+        "10959__clean010_src1",
+        "10959__clean010_src2"
+      ]
+    },
+    {
+      "original_id": "11456",
+      "renamed_ids": [
+        "11456__clean010_src1",
+        "11456__clean010_src2"
+      ]
+    }
+  ]
+}

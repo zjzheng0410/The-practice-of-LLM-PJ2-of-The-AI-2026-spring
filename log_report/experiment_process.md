@@ -27,3 +27,12 @@
 - 新增增强逻辑测试，覆盖复制规则、唯一 id、泄漏检查、输出保护和重复 id 重编号。
 - 生成 `train_sft_clean008.json` 与 `augment_report_clean008.json`，原始 10902 条，新增 2794 条，增强后 13696 条。
 - 增强比例为 1.2563，train/valid 同题 overlap 为 0，单源样本最多复制 1 次。
+
+## 2026-06-01 clean-010 几何增强策略
+
+- 新增增强 policy registry，将 clean-008 与 clean-010 策略定义从增强主流程解耦。
+- 将增强主流程改为读取 policy 对象，保留 clean-008 默认 alias、policy 名、复制规则和后缀兼容。
+- 新增 clean-010 几何样本增强，只复制 `geometry` 标签样本，增强原因统一为 `geometry_focus`。
+- 扩展增强单测，覆盖 registry、clean-008 回归、clean-010 触发规则、专属后缀和 run 级报告。
+- 生成 `train_sft_clean010.json` 与 `augment_report_clean010.json`，原始 10902 条，新增 1248 条，增强后 12150 条。
+- train/valid 同题 overlap 为 0，单源样本最多复制 1 次，输出重复 id 为 0，重复源 id 重编号 18 条。
