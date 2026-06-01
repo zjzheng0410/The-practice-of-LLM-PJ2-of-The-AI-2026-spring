@@ -1,0 +1,5 @@
+checkpoint,checkpoint_name,step,accuracy,postprocess_failure_rate,correct,total,metrics_file
+output/clean-007/checkpoint-3410,checkpoint-3410,3410,0.358,0.001,358,1000,eval_result/valid_v2/clean-007/checkpoint-3410/metrics.json
+output/clean-007/checkpoint-3000,checkpoint-3000,3000,0.354,0.002,354,1000,eval_result/valid_v2/clean-007/checkpoint-3000/metrics.json
+output/clean-007/checkpoint-2000,checkpoint-2000,2000,0.303,0.0,303,1000,eval_result/valid_v2/clean-007/checkpoint-2000/metrics.json
+output/clean-007/checkpoint-1000,checkpoint-1000,1000,0.276,0.0,276,1000,eval_result/valid_v2/clean-007/checkpoint-1000/metrics.json

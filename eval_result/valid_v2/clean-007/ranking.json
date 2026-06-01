@@ -1,0 +1,42 @@
+[
+  {
+    "checkpoint": "output/clean-007/checkpoint-3410",
+    "checkpoint_name": "checkpoint-3410",
+    "step": 3410,
+    "accuracy": 0.358,
+    "postprocess_failure_rate": 0.001,
+    "correct": 358,
+    "total": 1000,
+    "metrics_file": "eval_result/valid_v2/clean-007/checkpoint-3410/metrics.json"
+  },
+  {
+    "checkpoint": "output/clean-007/checkpoint-3000",
+    "checkpoint_name": "checkpoint-3000",
+    "step": 3000,
+    "accuracy": 0.354,
+    "postprocess_failure_rate": 0.002,
+    "correct": 354,
+    "total": 1000,
+    "metrics_file": "eval_result/valid_v2/clean-007/checkpoint-3000/metrics.json"
+  },
+  {
+    "checkpoint": "output/clean-007/checkpoint-2000",
+    "checkpoint_name": "checkpoint-2000",
+    "step": 2000,
+    "accuracy": 0.303,
+    "postprocess_failure_rate": 0.0,
+    "correct": 303,
+    "total": 1000,
+    "metrics_file": "eval_result/valid_v2/clean-007/checkpoint-2000/metrics.json"
+  },
+  {
+    "checkpoint": "output/clean-007/checkpoint-1000",
+    "checkpoint_name": "checkpoint-1000",
+    "step": 1000,
+    "accuracy": 0.276,
+    "postprocess_failure_rate": 0.0,
+    "correct": 276,
+    "total": 1000,
+    "metrics_file": "eval_result/valid_v2/clean-007/checkpoint-1000/metrics.json"
+  }
+]

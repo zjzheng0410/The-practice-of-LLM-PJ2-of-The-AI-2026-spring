@@ -1,0 +1,89 @@
+{
+  "total_wrong": 675,
+  "tag_counts": {
+    "answer_type_mismatch": {
+      "count": 51,
+      "ratio": 0.07555555555555556
+    },
+    "fraction_percent_error": {
+      "count": 1,
+      "ratio": 0.0014814814814814814
+    },
+    "geometry_keyword": {
+      "count": 66,
+      "ratio": 0.09777777777777778
+    },
+    "long_question": {
+      "count": 5,
+      "ratio": 0.007407407407407408
+    },
+    "multi_step_keyword": {
+      "count": 261,
+      "ratio": 0.38666666666666666
+    },
+    "numeric_value_error": {
+      "count": 623,
+      "ratio": 0.922962962962963
+    },
+    "rate_ratio_keyword": {
+      "count": 37,
+      "ratio": 0.054814814814814816
+    },
+    "unit_scale_suspect": {
+      "count": 23,
+      "ratio": 0.034074074074074076
+    }
+  },
+  "by_answer_type": {
+    "decimal": 79,
+    "fraction": 29,
+    "integer": 547,
+    "multi_answer": 1,
+    "percent": 19
+  },
+  "by_pred_answer_type": {
+    "decimal": 67,
+    "fraction": 25,
+    "integer": 563,
+    "mixed_fraction": 2,
+    "percent": 18
+  },
+  "by_extract_status": {
+    "matched": 675
+  },
+  "answer_type_x_attribution_tag": {
+    "decimal": {
+      "answer_type_mismatch": 29,
+      "geometry_keyword": 24,
+      "multi_step_keyword": 31,
+      "numeric_value_error": 50,
+      "rate_ratio_keyword": 2
+    },
+    "fraction": {
+      "answer_type_mismatch": 4,
+      "fraction_percent_error": 1,
+      "multi_step_keyword": 20,
+      "numeric_value_error": 24,
+      "rate_ratio_keyword": 5
+    },
+    "integer": {
+      "answer_type_mismatch": 16,
+      "geometry_keyword": 41,
+      "long_question": 4,
+      "multi_step_keyword": 201,
+      "numeric_value_error": 531,
+      "rate_ratio_keyword": 30,
+      "unit_scale_suspect": 23
+    },
+    "multi_answer": {
+      "answer_type_mismatch": 1
+    },
+    "percent": {
+      "answer_type_mismatch": 1,
+      "geometry_keyword": 1,
+      "long_question": 1,
+      "multi_step_keyword": 9,
+      "numeric_value_error": 18
+    }
+  }
+}

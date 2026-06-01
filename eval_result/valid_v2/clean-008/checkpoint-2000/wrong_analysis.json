@@ -1,0 +1,89 @@
+{
+  "total_wrong": 688,
+  "tag_counts": {
+    "answer_type_mismatch": {
+      "count": 59,
+      "ratio": 0.08575581395348837
+    },
+    "fraction_percent_error": {
+      "count": 1,
+      "ratio": 0.0014534883720930232
+    },
+    "geometry_keyword": {
+      "count": 69,
+      "ratio": 0.1002906976744186
+    },
+    "long_question": {
+      "count": 4,
+      "ratio": 0.005813953488372093
+    },
+    "multi_step_keyword": {
+      "count": 262,
+      "ratio": 0.3808139534883721
+    },
+    "numeric_value_error": {
+      "count": 628,
+      "ratio": 0.9127906976744186
+    },
+    "rate_ratio_keyword": {
+      "count": 37,
+      "ratio": 0.05377906976744186
+    },
+    "unit_scale_suspect": {
+      "count": 16,
+      "ratio": 0.023255813953488372
+    }
+  },
+  "by_answer_type": {
+    "decimal": 80,
+    "fraction": 29,
+    "integer": 558,
+    "multi_answer": 1,
+    "percent": 20
+  },
+  "by_pred_answer_type": {
+    "decimal": 57,
+    "fraction": 23,
+    "integer": 589,
+    "percent": 19
+  },
+  "by_extract_status": {
+    "matched": 688
+  },
+  "answer_type_x_attribution_tag": {
+    "decimal": {
+      "answer_type_mismatch": 37,
+      "geometry_keyword": 26,
+      "multi_step_keyword": 29,
+      "numeric_value_error": 43,
+      "rate_ratio_keyword": 2
+    },
+    "fraction": {
+      "answer_type_mismatch": 7,
+      "fraction_percent_error": 1,
+      "multi_step_keyword": 18,
+      "numeric_value_error": 21,
+      "rate_ratio_keyword": 5
+    },
+    "integer": {
+      "answer_type_mismatch": 13,
+      "geometry_keyword": 42,
+      "long_question": 3,
+      "multi_step_keyword": 206,
+      "numeric_value_error": 545,
+      "rate_ratio_keyword": 29,
+      "unit_scale_suspect": 16
+    },
+    "multi_answer": {
+      "answer_type_mismatch": 1
+    },
+    "percent": {
+      "answer_type_mismatch": 1,
+      "geometry_keyword": 1,
+      "long_question": 1,
+      "multi_step_keyword": 9,
+      "numeric_value_error": 19,
+      "rate_ratio_keyword": 1
+    }
+  }
+}

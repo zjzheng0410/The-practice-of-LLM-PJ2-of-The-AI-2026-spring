@@ -1,0 +1,92 @@
+{
+  "total_wrong": 646,
+  "tag_counts": {
+    "answer_type_mismatch": {
+      "count": 65,
+      "ratio": 0.10061919504643962
+    },
+    "geometry_keyword": {
+      "count": 72,
+      "ratio": 0.11145510835913312
+    },
+    "long_question": {
+      "count": 5,
+      "ratio": 0.007739938080495356
+    },
+    "multi_step_keyword": {
+      "count": 252,
+      "ratio": 0.39009287925696595
+    },
+    "numeric_value_error": {
+      "count": 581,
+      "ratio": 0.8993808049535603
+    },
+    "postprocess_failure": {
+      "count": 2,
+      "ratio": 0.0030959752321981426
+    },
+    "rate_ratio_keyword": {
+      "count": 33,
+      "ratio": 0.05108359133126935
+    },
+    "unit_scale_suspect": {
+      "count": 18,
+      "ratio": 0.02786377708978328
+    }
+  },
+  "by_answer_type": {
+    "decimal": 83,
+    "fraction": 29,
+    "integer": 513,
+    "multi_answer": 1,
+    "percent": 20
+  },
+  "by_pred_answer_type": {
+    "decimal": 69,
+    "fraction": 25,
+    "integer": 527,
+    "mixed_fraction": 1,
+    "percent": 21,
+    "unknown": 2,
+    "yes_no": 1
+  },
+  "by_extract_status": {
+    "matched": 644,
+    "unknown_short": 2
+  },
+  "answer_type_x_attribution_tag": {
+    "decimal": {
+      "answer_type_mismatch": 33,
+      "geometry_keyword": 28,
+      "multi_step_keyword": 30,
+      "numeric_value_error": 50,
+      "rate_ratio_keyword": 2,
+      "unit_scale_suspect": 1
+    },
+    "fraction": {
+      "answer_type_mismatch": 6,
+      "multi_step_keyword": 19,
+      "numeric_value_error": 23,
+      "rate_ratio_keyword": 5
+    },
+    "integer": {
+      "answer_type_mismatch": 25,
+      "geometry_keyword": 43,
+      "long_question": 4,
+      "multi_step_keyword": 194,
+      "numeric_value_error": 488,
+      "postprocess_failure": 2,
+      "rate_ratio_keyword": 26,
+      "unit_scale_suspect": 17
+    },
+    "multi_answer": {
+      "answer_type_mismatch": 1
+    },
+    "percent": {
+      "geometry_keyword": 1,
+      "long_question": 1,
+      "multi_step_keyword": 9,
+      "numeric_value_error": 20
+    }
+  }
+}

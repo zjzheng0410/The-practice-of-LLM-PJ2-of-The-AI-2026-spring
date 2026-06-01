@@ -318,7 +318,7 @@ python -u qwen_ft.py \
   --experiment-id clean-008 \
   --epochs 5 \
   --learning-rate 1e-4 \
-  --max-length 384 \
+  --max-length 512 \
   --lora-r 8 \
   --save-steps 1000
 ```

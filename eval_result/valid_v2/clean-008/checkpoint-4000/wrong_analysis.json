@@ -1,0 +1,97 @@
+{
+  "total_wrong": 658,
+  "tag_counts": {
+    "answer_type_mismatch": {
+      "count": 53,
+      "ratio": 0.08054711246200608
+    },
+    "fraction_percent_error": {
+      "count": 1,
+      "ratio": 0.001519756838905775
+    },
+    "geometry_keyword": {
+      "count": 68,
+      "ratio": 0.1033434650455927
+    },
+    "long_question": {
+      "count": 5,
+      "ratio": 0.007598784194528876
+    },
+    "multi_step_keyword": {
+      "count": 256,
+      "ratio": 0.3890577507598784
+    },
+    "numeric_value_error": {
+      "count": 604,
+      "ratio": 0.9179331306990881
+    },
+    "postprocess_failure": {
+      "count": 1,
+      "ratio": 0.001519756838905775
+    },
+    "rate_ratio_keyword": {
+      "count": 36,
+      "ratio": 0.0547112462006079
+    },
+    "unit_scale_suspect": {
+      "count": 18,
+      "ratio": 0.02735562310030395
+    }
+  },
+  "by_answer_type": {
+    "decimal": 77,
+    "fraction": 28,
+    "integer": 533,
+    "multi_answer": 1,
+    "percent": 19
+  },
+  "by_pred_answer_type": {
+    "decimal": 76,
+    "fraction": 25,
+    "integer": 535,
+    "mixed_fraction": 3,
+    "percent": 18,
+    "unknown": 1
+  },
+  "by_extract_status": {
+    "matched": 657,
+    "unknown_short": 1
+  },
+  "answer_type_x_attribution_tag": {
+    "decimal": {
+      "answer_type_mismatch": 22,
+      "geometry_keyword": 24,
+      "multi_step_keyword": 30,
+      "numeric_value_error": 55,
+      "rate_ratio_keyword": 2
+    },
+    "fraction": {
+      "answer_type_mismatch": 5,
+      "fraction_percent_error": 1,
+      "multi_step_keyword": 20,
+      "numeric_value_error": 22,
+      "rate_ratio_keyword": 5
+    },
+    "integer": {
+      "answer_type_mismatch": 24,
+      "geometry_keyword": 43,
+      "long_question": 4,
+      "multi_step_keyword": 198,
+      "numeric_value_error": 509,
+      "postprocess_failure": 1,
+      "rate_ratio_keyword": 29,
+      "unit_scale_suspect": 17
+    },
+    "multi_answer": {
+      "answer_type_mismatch": 1
+    },
+    "percent": {
+      "answer_type_mismatch": 1,
+      "geometry_keyword": 1,
+      "long_question": 1,
+      "multi_step_keyword": 8,
+      "numeric_value_error": 18,
+      "unit_scale_suspect": 1
+    }
+  }
+}
