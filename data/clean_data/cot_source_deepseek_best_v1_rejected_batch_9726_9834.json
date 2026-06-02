@@ -1,0 +1,26 @@
+[
+  {
+    "id": "9736",
+    "status": "reject",
+    "reasoning": "",
+    "teacher_answer": "14.28",
+    "gold_answer": "70",
+    "answer_type": "integer",
+    "reject_reason": "题目中'原计划用354小时'疑似数据错误，按此条件得到约14.28个零件，根本无法得到答案70。题干文字已损坏，无法可靠求解。",
+    "cot_source": "deepseek_teacher_best_v1",
+    "teacher_model": "codex-gpt-5",
+    "prompt_version": "cot_teacher_best_v1"
+  },
+  {
+    "id": "9805",
+    "status": "reject",
+    "reasoning": "",
+    "teacher_answer": "15",
+    "gold_answer": "15",
+    "answer_type": "integer",
+    "reject_reason": "题目问'够大象吃多少天？还剩多少千克?'有两个问题，但gold_answer仅给出'15'，未回答剩余千克数，答案不完整。",
+    "cot_source": "deepseek_teacher_best_v1",
+    "teacher_model": "codex-gpt-5",
+    "prompt_version": "cot_teacher_best_v1"
+  }
+]

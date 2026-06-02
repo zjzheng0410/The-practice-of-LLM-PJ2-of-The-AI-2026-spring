@@ -1,0 +1,26 @@
+[
+  {
+    "id": "11731",
+    "status": "reject",
+    "reasoning": "",
+    "teacher_answer": "22",
+    "gold_answer": "20",
+    "answer_type": "integer",
+    "reject_reason": "独立计算答案为22(130÷6=21余4，余下4人也排一行需22行)，与gold_answer=20不一致。",
+    "cot_source": "deepseek_teacher_best_v1",
+    "teacher_model": "codex-gpt-5",
+    "prompt_version": "cot_teacher_best_v1"
+  },
+  {
+    "id": "11745",
+    "status": "reject",
+    "reasoning": "",
+    "teacher_answer": "33.9",
+    "gold_answer": "45.9",
+    "answer_type": "decimal",
+    "reject_reason": "独立计算答案为33.9(四周墙壁+顶面-门窗=113平方米，113×0.3=33.9千克)，与gold_answer=45.9不一致。",
+    "cot_source": "deepseek_teacher_best_v1",
+    "teacher_model": "codex-gpt-5",
+    "prompt_version": "cot_teacher_best_v1"
+  }
+]

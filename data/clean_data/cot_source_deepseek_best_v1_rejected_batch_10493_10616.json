@@ -1,0 +1,74 @@
+[
+  {
+    "id": "10494",
+    "status": "reject",
+    "reasoning": "",
+    "teacher_answer": "16/9",
+    "gold_answer": "179",
+    "answer_type": "integer",
+    "reject_reason": "gold_answer='179'与计算不符：行完全程时间=(2/3)÷(3/8)=16/9≈1.778小时，gold为179，无法验证",
+    "cot_source": "deepseek_teacher_best_v1",
+    "teacher_model": "codex-gpt-5",
+    "prompt_version": "cot_teacher_best_v1"
+  },
+  {
+    "id": "10541_0",
+    "status": "reject",
+    "reasoning": "",
+    "teacher_answer": "272/15",
+    "gold_answer": "25",
+    "answer_type": "integer",
+    "reject_reason": "gold_answer='25'与计算不符：九月用煤=34×8/(8+7)=34×8/15=272/15≈18.13吨，gold为25，无法验证",
+    "cot_source": "deepseek_teacher_best_v1",
+    "teacher_model": "codex-gpt-5",
+    "prompt_version": "cot_teacher_best_v1"
+  },
+  {
+    "id": "10569_0",
+    "status": "reject",
+    "reasoning": "",
+    "teacher_answer": "164.47",
+    "gold_answer": "1520",
+    "answer_type": "integer",
+    "reject_reason": "gold_answer='1520'与题目条件矛盾：题目文字'1千克花生可以榨出3.04千克花生油'出油率超过100%不合理；按字面计算需500÷3.04≈164.47千克花生，gold为500×3.04=1520，题目表述与预期答案方向相反",
+    "cot_source": "deepseek_teacher_best_v1",
+    "teacher_model": "codex-gpt-5",
+    "prompt_version": "cot_teacher_best_v1"
+  },
+  {
+    "id": "10569_1",
+    "status": "reject",
+    "reasoning": "",
+    "teacher_answer": "164.47",
+    "gold_answer": "1520",
+    "answer_type": "integer",
+    "reject_reason": "gold_answer='1520'与题目条件矛盾：题目文字'1千克花生可以榨出3.04千克花生油'出油率超过100%不合理；按字面计算需500÷3.04≈164.47千克花生，gold为500×3.04=1520，题目表述与预期答案方向相反",
+    "cot_source": "deepseek_teacher_best_v1",
+    "teacher_model": "codex-gpt-5",
+    "prompt_version": "cot_teacher_best_v1"
+  },
+  {
+    "id": "10572",
+    "status": "reject",
+    "reasoning": "",
+    "teacher_answer": "19.8",
+    "gold_answer": "19.5",
+    "answer_type": "decimal",
+    "reject_reason": "gold_answer='19.5'与计算结果不一致：圆柱体积=π×4²×50=800π，取π=3.14得2512立方厘米，重量=2512×7.9=19844.8克≈19.8千克(保留一位小数)，gold为19.5",
+    "cot_source": "deepseek_teacher_best_v1",
+    "teacher_model": "codex-gpt-5",
+    "prompt_version": "cot_teacher_best_v1"
+  },
+  {
+    "id": "10584",
+    "status": "reject",
+    "reasoning": "",
+    "teacher_answer": "600",
+    "gold_answer": "1500",
+    "answer_type": "integer",
+    "reject_reason": "gold_answer='1500'与计算不符：题目问小新这天早晨比平时'多走多少米'，平时走900米，这天走300+300+900=1500米，比平时多走600米；gold=1500为总路程而非多走的路程",
+    "cot_source": "deepseek_teacher_best_v1",
+    "teacher_model": "codex-gpt-5",
+    "prompt_version": "cot_teacher_best_v1"
+  }
+]

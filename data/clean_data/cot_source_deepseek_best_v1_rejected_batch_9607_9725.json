@@ -1,0 +1,50 @@
+[
+  {
+    "id": "9627",
+    "status": "reject",
+    "reasoning": "",
+    "teacher_answer": "0.3",
+    "gold_answer": "30",
+    "answer_type": "integer",
+    "reject_reason": "单位换算不匹配。截成3段增加4个横截面，每个截面24÷4=6平方分米=0.06平方米，体积=0.06×5=0.3立方米。答案30与正确结果0.3不符。",
+    "cot_source": "deepseek_teacher_best_v1",
+    "teacher_model": "codex-gpt-5",
+    "prompt_version": "cot_teacher_best_v1"
+  },
+  {
+    "id": "9674",
+    "status": "reject",
+    "reasoning": "",
+    "teacher_answer": "未知",
+    "gold_answer": "103",
+    "answer_type": "integer",
+    "reject_reason": "题目条件不足。笔记本原价5元，但降价后单价未知，无法由总收入319.3元确定库存本数。",
+    "cot_source": "deepseek_teacher_best_v1",
+    "teacher_model": "codex-gpt-5",
+    "prompt_version": "cot_teacher_best_v1"
+  },
+  {
+    "id": "9680",
+    "status": "reject",
+    "reasoning": "",
+    "teacher_answer": "64",
+    "gold_answer": "664",
+    "answer_type": "integer",
+    "reject_reason": "计算结果不一致。4车水泥共4×144=576千克，手推车载重9千克/次，需576÷9=64次。答案664与正确结果64不符。",
+    "cot_source": "deepseek_teacher_best_v1",
+    "teacher_model": "codex-gpt-5",
+    "prompt_version": "cot_teacher_best_v1"
+  },
+  {
+    "id": "9713",
+    "status": "reject",
+    "reasoning": "",
+    "teacher_answer": "4050",
+    "gold_answer": "4095",
+    "answer_type": "integer",
+    "reject_reason": "题目未指定年份，第一季度天数不确定。平年90天：45×90=4050度；闰年91天：45×91=4095度。答案4095对应闰年，无法确认年份，答案不唯一。",
+    "cot_source": "deepseek_teacher_best_v1",
+    "teacher_model": "codex-gpt-5",
+    "prompt_version": "cot_teacher_best_v1"
+  }
+]

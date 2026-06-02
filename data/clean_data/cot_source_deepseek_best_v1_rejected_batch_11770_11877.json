@@ -1,0 +1,26 @@
+[
+  {
+    "id": "11812",
+    "gold_answer": "37.5%",
+    "answer_type": "percent",
+    "cot_source": "deepseek_teacher_best_v1",
+    "teacher_model": "codex-gpt-5",
+    "prompt_version": "cot_teacher_best_v1",
+    "reasoning": "",
+    "reject_reason": "教师答案62.5%与标准答案37.5%不一致",
+    "status": "reject",
+    "teacher_answer": "62.5%"
+  },
+  {
+    "id": "11871",
+    "gold_answer": "72.25",
+    "answer_type": "decimal",
+    "cot_source": "deepseek_teacher_best_v1",
+    "teacher_model": "codex-gpt-5",
+    "prompt_version": "cot_teacher_best_v1",
+    "reasoning": "",
+    "reject_reason": "教师答案72.75与标准答案72.25不一致",
+    "status": "reject",
+    "teacher_answer": "72.75"
+  }
+]

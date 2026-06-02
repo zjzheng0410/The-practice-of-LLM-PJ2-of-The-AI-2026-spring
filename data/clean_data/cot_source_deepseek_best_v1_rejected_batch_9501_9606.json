@@ -1,0 +1,26 @@
+[
+  {
+    "id": "9569",
+    "status": "reject",
+    "reasoning": "",
+    "teacher_answer": "2151.2",
+    "gold_answer": "2143.64",
+    "answer_type": "decimal",
+    "reject_reason": "存款利息税税率未在题目中给出，无法唯一确定税后利息金额，需要编造税率条件才能得到答案2143.64。",
+    "cot_source": "deepseek_teacher_best_v1",
+    "teacher_model": "codex-gpt-5",
+    "prompt_version": "cot_teacher_best_v1"
+  },
+  {
+    "id": "9585",
+    "status": "reject",
+    "reasoning": "",
+    "teacher_answer": "24",
+    "gold_answer": "72",
+    "answer_type": "integer",
+    "reject_reason": "小方的卡片张数是小红的3倍，即小方=3×小红，小红=18÷3=6张，两人共24张，与gold_answer的72不一致。72是将倍数关系颠倒后计算的结果。",
+    "cot_source": "deepseek_teacher_best_v1",
+    "teacher_model": "codex-gpt-5",
+    "prompt_version": "cot_teacher_best_v1"
+  }
+]

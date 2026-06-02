@@ -1,0 +1,74 @@
+[
+  {
+    "id": "10745",
+    "status": "reject",
+    "reasoning": "",
+    "teacher_answer": "121",
+    "gold_answer": "120",
+    "answer_type": "integer",
+    "reject_reason": "1087÷9=120余7，运120次后还剩7吨，需要第121次才能全部运完。gold_answer=120忽略了余数，答案不正确。",
+    "cot_source": "deepseek_teacher_best_v1",
+    "teacher_model": "codex-gpt-5",
+    "prompt_version": "cot_teacher_best_v1"
+  },
+  {
+    "id": "10794",
+    "status": "reject",
+    "reasoning": "",
+    "teacher_answer": "1200",
+    "gold_answer": "12004",
+    "answer_type": "integer",
+    "reject_reason": "小华步行速度80米/分，15分钟到达，距离为80×15=1200米。gold_answer=12004既不是距离也不是猎犬跑的总路程(300×15=4500)，数值明显错误。",
+    "cot_source": "deepseek_teacher_best_v1",
+    "teacher_model": "codex-gpt-5",
+    "prompt_version": "cot_teacher_best_v1"
+  },
+  {
+    "id": "10794",
+    "status": "reject",
+    "reasoning": "",
+    "teacher_answer": "1200",
+    "gold_answer": "4500",
+    "answer_type": "integer",
+    "reject_reason": "题目问小华家到姥姥家的距离，应为80×15=1200米。gold_answer=4500是猎犬奔跑的总路程，答非所问。",
+    "cot_source": "deepseek_teacher_best_v1",
+    "teacher_model": "codex-gpt-5",
+    "prompt_version": "cot_teacher_best_v1"
+  },
+  {
+    "id": "10835",
+    "status": "reject",
+    "reasoning": "",
+    "teacher_answer": "3",
+    "gold_answer": "33",
+    "answer_type": "integer",
+    "reject_reason": "满足3颗3颗数正好数尽且5颗5颗数余3颗的最小正整数是3。3÷3=1(整除)，3÷5=0余3(满足条件)。18也满足但比3大。gold_answer=33不是最小解。",
+    "cot_source": "deepseek_teacher_best_v1",
+    "teacher_model": "codex-gpt-5",
+    "prompt_version": "cot_teacher_best_v1"
+  },
+  {
+    "id": "10838",
+    "status": "reject",
+    "reasoning": "",
+    "teacher_answer": "4",
+    "gold_answer": "138",
+    "answer_type": "integer",
+    "reject_reason": "题目问几小时后两车相距138千米，应为(506-138)÷(52+40)=4小时。gold_answer=138是剩余距离而非时间，答非所问。",
+    "cot_source": "deepseek_teacher_best_v1",
+    "teacher_model": "codex-gpt-5",
+    "prompt_version": "cot_teacher_best_v1"
+  },
+  {
+    "id": "10843",
+    "status": "reject",
+    "reasoning": "",
+    "teacher_answer": "125000",
+    "gold_answer": "125000",
+    "answer_type": "integer",
+    "reject_reason": "题目条件过于简略，正方体蓄水池底部不铺砖但未明确墙体厚度、高度等关键参数，无法唯一确定蓄水体积，teacher_answer无法可靠计算。",
+    "cot_source": "deepseek_teacher_best_v1",
+    "teacher_model": "codex-gpt-5",
+    "prompt_version": "cot_teacher_best_v1"
+  }
+]
