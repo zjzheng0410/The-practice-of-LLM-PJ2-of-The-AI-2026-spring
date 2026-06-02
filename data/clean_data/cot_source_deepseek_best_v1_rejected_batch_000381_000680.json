@@ -1,0 +1,62 @@
+[
+  {
+    "id": "533",
+    "status": "reject",
+    "reasoning": "",
+    "teacher_answer": "21.98",
+    "gold_answer": "2198",
+    "answer_type": "integer",
+    "reject_reason": "单位换算错误。底面积π×10²+侧面积2π×10×30=700π=2198平方厘米，但问题要求的是平方分米，正确应为2198÷100=21.98平方分米。答案类型为integer也与实际不符。",
+    "cot_source": "deepseek_teacher_best_v1",
+    "teacher_model": "codex-gpt-5",
+    "prompt_version": "cot_teacher_best_v1"
+  },
+  {
+    "id": "540",
+    "status": "reject",
+    "reasoning": "",
+    "teacher_answer": "84.78",
+    "gold_answer": "47.1",
+    "answer_type": "decimal",
+    "reject_reason": "面积计算错误。底面直径6米，半径3米，深3米。抹水泥部分包括底面和侧面：底面面积π×3²=28.26平方米，侧面积2π×3×3=56.52平方米，总和应为84.78平方米。原答案47.1可能是误将底面周长(2πr=18.84)与底面积(28.26)相加所得。",
+    "cot_source": "deepseek_teacher_best_v1",
+    "teacher_model": "codex-gpt-5",
+    "prompt_version": "cot_teacher_best_v1"
+  },
+  {
+    "id": "646",
+    "status": "reject",
+    "reasoning": "",
+    "teacher_answer": "6",
+    "gold_answer": "12",
+    "answer_type": "integer",
+    "reject_reason": "设小明有x颗，小聪有2x颗，小聪给小明3颗后相等：2x-3=x+3，解得x=6。给定答案12与计算结果不符。",
+    "cot_source": "deepseek_teacher_best_v1",
+    "teacher_model": "codex-gpt-5",
+    "prompt_version": "cot_teacher_best_v1"
+  },
+  {
+    "id": "662",
+    "status": "reject",
+    "reasoning": "",
+    "teacher_answer": "9",
+    "gold_answer": "45",
+    "answer_type": "integer",
+    "reject_reason": "三个数总和=9×3=27，乙占3份(共2+3+4=9份)，乙=27×3/9=9。给定答案45与计算结果不符。",
+    "cot_source": "deepseek_teacher_best_v1",
+    "teacher_model": "codex-gpt-5",
+    "prompt_version": "cot_teacher_best_v1"
+  },
+  {
+    "id": "676",
+    "status": "reject",
+    "reasoning": "",
+    "teacher_answer": "53",
+    "gold_answer": "36.2",
+    "answer_type": "decimal",
+    "reject_reason": "篱笆长度即长方形周长=2×(16.8+9.7)=53米。给定答案36.2与计算结果不符。",
+    "cot_source": "deepseek_teacher_best_v1",
+    "teacher_model": "codex-gpt-5",
+    "prompt_version": "cot_teacher_best_v1"
+  }
+]

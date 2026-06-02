@@ -1,0 +1,26 @@
+[
+  {
+    "id": "251",
+    "status": "reject",
+    "reasoning": "",
+    "teacher_answer": "7",
+    "gold_answer": "5",
+    "answer_type": "integer",
+    "reject_reason": "按题面计算舞蹈房长度为3×6+2=20米，用3米绳子至少要量7次，与标准答案不一致。",
+    "cot_source": "deepseek_teacher_best_v1",
+    "teacher_model": "codex-gpt-5",
+    "prompt_version": "cot_teacher_best_v1"
+  },
+  {
+    "id": "260",
+    "status": "reject",
+    "reasoning": "",
+    "teacher_answer": "",
+    "gold_answer": "6",
+    "answer_type": "integer",
+    "reject_reason": "题目只给出4米绳子量3次正好量完，没有给出新的测量长度，无法推出要量6次。",
+    "cot_source": "deepseek_teacher_best_v1",
+    "teacher_model": "codex-gpt-5",
+    "prompt_version": "cot_teacher_best_v1"
+  }
+]

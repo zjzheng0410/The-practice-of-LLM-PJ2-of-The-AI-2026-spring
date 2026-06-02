@@ -1,0 +1,26 @@
+[
+  {
+    "id": "29",
+    "status": "reject",
+    "reasoning": "",
+    "teacher_answer": "",
+    "gold_answer": "672",
+    "answer_type": "integer",
+    "reject_reason": "题目中“盐是水的111”表述缺失分数符号，条件不可靠，无法唯一确定答案。",
+    "cot_source": "deepseek_teacher_best_v1",
+    "teacher_model": "codex-gpt-5",
+    "prompt_version": "cot_teacher_best_v1"
+  },
+  {
+    "id": "46",
+    "status": "reject",
+    "reasoning": "",
+    "teacher_answer": "",
+    "gold_answer": "2265.05",
+    "answer_type": "decimal",
+    "reject_reason": "题目要求税后利息但未给出利息税率，无法仅凭题目条件可靠推出标准答案。",
+    "cot_source": "deepseek_teacher_best_v1",
+    "teacher_model": "codex-gpt-5",
+    "prompt_version": "cot_teacher_best_v1"
+  }
+]

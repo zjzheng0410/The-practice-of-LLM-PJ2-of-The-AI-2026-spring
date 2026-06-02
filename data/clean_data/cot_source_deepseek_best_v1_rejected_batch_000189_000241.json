@@ -1,0 +1,50 @@
+[
+  {
+    "id": "219",
+    "status": "reject",
+    "reasoning": "",
+    "teacher_answer": "",
+    "gold_answer": "40",
+    "answer_type": "integer",
+    "reject_reason": "两个8分米、4分米的长方形可用不同方式拼成长方形，周长不唯一。",
+    "cot_source": "deepseek_teacher_best_v1",
+    "teacher_model": "codex-gpt-5",
+    "prompt_version": "cot_teacher_best_v1"
+  },
+  {
+    "id": "220",
+    "status": "reject",
+    "reasoning": "",
+    "teacher_answer": "",
+    "gold_answer": "5",
+    "answer_type": "integer",
+    "reject_reason": "44人分成8个小组无法平均每组5人，题目问每组可分几人时答案不能可靠唯一确定。",
+    "cot_source": "deepseek_teacher_best_v1",
+    "teacher_model": "codex-gpt-5",
+    "prompt_version": "cot_teacher_best_v1"
+  },
+  {
+    "id": "225",
+    "status": "reject",
+    "reasoning": "",
+    "teacher_answer": "",
+    "gold_answer": "103",
+    "answer_type": "integer",
+    "reject_reason": "题目中“有45人上本”表述错误，关键动作不可靠，不能按原题条件生成 CoT。",
+    "cot_source": "deepseek_teacher_best_v1",
+    "teacher_model": "codex-gpt-5",
+    "prompt_version": "cot_teacher_best_v1"
+  },
+  {
+    "id": "239",
+    "status": "reject",
+    "reasoning": "",
+    "teacher_answer": "",
+    "gold_answer": "362",
+    "answer_type": "integer",
+    "reject_reason": "题目上午数量单位是千克，下午和问题单位是袋，单位不一致，无法可靠计算。",
+    "cot_source": "deepseek_teacher_best_v1",
+    "teacher_model": "codex-gpt-5",
+    "prompt_version": "cot_teacher_best_v1"
+  }
+]

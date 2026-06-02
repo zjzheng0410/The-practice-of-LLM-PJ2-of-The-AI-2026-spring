@@ -1,0 +1,74 @@
+[
+  {
+    "id": "61",
+    "status": "reject",
+    "reasoning": "",
+    "teacher_answer": "",
+    "gold_answer": "872.1",
+    "answer_type": "decimal",
+    "reject_reason": "题目要求交税但没有给出利息税率，不能仅凭题目条件可靠推出标准答案。",
+    "cot_source": "deepseek_teacher_best_v1",
+    "teacher_model": "codex-gpt-5",
+    "prompt_version": "cot_teacher_best_v1"
+  },
+  {
+    "id": "63",
+    "status": "reject",
+    "reasoning": "",
+    "teacher_answer": "",
+    "gold_answer": "30900",
+    "answer_type": "integer",
+    "reject_reason": "题目要求设计存款方案并计算两次取款金额，但标准答案只给出一个数，答案格式无法可靠对齐。",
+    "cot_source": "deepseek_teacher_best_v1",
+    "teacher_model": "codex-gpt-5",
+    "prompt_version": "cot_teacher_best_v1"
+  },
+  {
+    "id": "70",
+    "status": "reject",
+    "reasoning": "",
+    "teacher_answer": "",
+    "gold_answer": "8000",
+    "answer_type": "integer",
+    "reject_reason": "题目只给出扣除的利息税金额，没有给出利息税率，无法唯一确定本金。",
+    "cot_source": "deepseek_teacher_best_v1",
+    "teacher_model": "codex-gpt-5",
+    "prompt_version": "cot_teacher_best_v1"
+  },
+  {
+    "id": "75",
+    "status": "reject",
+    "reasoning": "",
+    "teacher_answer": "",
+    "gold_answer": "4000",
+    "answer_type": "integer",
+    "reject_reason": "题目说得到税后利息但没有给出利息税率，无法可靠反推出本金。",
+    "cot_source": "deepseek_teacher_best_v1",
+    "teacher_model": "codex-gpt-5",
+    "prompt_version": "cot_teacher_best_v1"
+  },
+  {
+    "id": "94",
+    "status": "reject",
+    "reasoning": "",
+    "teacher_answer": "",
+    "gold_answer": "288",
+    "answer_type": "integer",
+    "reject_reason": "题目中“第二次降价110”数字格式残缺，无法可靠确定第二次降价比例。",
+    "cot_source": "deepseek_teacher_best_v1",
+    "teacher_model": "codex-gpt-5",
+    "prompt_version": "cot_teacher_best_v1"
+  },
+  {
+    "id": "97",
+    "status": "reject",
+    "reasoning": "",
+    "teacher_answer": "",
+    "gold_answer": "5%",
+    "answer_type": "percent",
+    "reject_reason": "题目中盐的质量写作“l0克”，数字字符不可靠，不能确定题目条件。",
+    "cot_source": "deepseek_teacher_best_v1",
+    "teacher_model": "codex-gpt-5",
+    "prompt_version": "cot_teacher_best_v1"
+  }
+]
