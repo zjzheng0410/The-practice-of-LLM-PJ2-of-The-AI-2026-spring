@@ -1,0 +1,38 @@
+[
+  {
+    "id": "1037",
+    "status": "reject",
+    "reasoning": "",
+    "teacher_answer": "44.5",
+    "gold_answer": "45.5",
+    "answer_type": "decimal",
+    "reject_reason": "一桶奶粉29.8元加一瓶罐头14.7元，应等于44.5元，但原答案45.5元计算错误，实际加法29.8+14.7=44.5，不存在进位多1元的依据。",
+    "cot_source": "deepseek_teacher_best_v1",
+    "teacher_model": "codex-gpt-5",
+    "prompt_version": "cot_teacher_best_v1"
+  },
+  {
+    "id": "1108",
+    "status": "reject",
+    "reasoning": "",
+    "teacher_answer": "10.2",
+    "gold_answer": "10.28",
+    "answer_type": "decimal",
+    "reject_reason": "销售额2040元除以200支钢笔，每支售价为2040÷200=10.2元，但原答案10.28元计算错误，进价8.5元为无关干扰信息。",
+    "cot_source": "deepseek_teacher_best_v1",
+    "teacher_model": "codex-gpt-5",
+    "prompt_version": "cot_teacher_best_v1"
+  },
+  {
+    "id": "1119",
+    "status": "reject",
+    "reasoning": "",
+    "teacher_answer": "10",
+    "gold_answer": "1000",
+    "answer_type": "integer",
+    "reject_reason": "长方形面积=40×25=1000平方分米，但问题问的是多少平方米，1平方米=100平方分米，所以应换算为1000÷100=10平方米。原答案1000虽然数值上等于面积平方分米数，但未按问题要求的单位换算。",
+    "cot_source": "deepseek_teacher_best_v1",
+    "teacher_model": "codex-gpt-5",
+    "prompt_version": "cot_teacher_best_v1"
+  }
+]

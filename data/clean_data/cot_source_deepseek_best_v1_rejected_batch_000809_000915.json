@@ -1,0 +1,38 @@
+[
+  {
+    "id": "829",
+    "status": "reject",
+    "reasoning": "",
+    "teacher_answer": "490",
+    "gold_answer": "49",
+    "answer_type": "integer",
+    "reject_reason": "原答案49是错误的。这道题应先计算成本：180元出售仍获利20%，所以成本=180÷(1+20%)=150元。按原标价640元出售可获利640-150=490元，而不是49元。原答案490被误写为49，少了十倍。",
+    "cot_source": "deepseek_teacher_best_v1",
+    "teacher_model": "codex-gpt-5",
+    "prompt_version": "cot_teacher_best_v1"
+  },
+  {
+    "id": "870",
+    "status": "reject",
+    "reasoning": "",
+    "teacher_answer": "300",
+    "gold_answer": "330",
+    "answer_type": "integer",
+    "reject_reason": "原答案330是错误的。轮船顺流航行速度为50千米/时，用时6小时，所以甲乙两港相距50×6=300千米。验证：返航用时10小时，逆流速度为300÷10=30千米/时，静水船速为(50+30)÷2=40千米/时，水流速度为(50-30)÷2=10千米/时，符合逻辑。原答案330没有正确依据。",
+    "cot_source": "deepseek_teacher_best_v1",
+    "teacher_model": "codex-gpt-5",
+    "prompt_version": "cot_teacher_best_v1"
+  },
+  {
+    "id": "905",
+    "status": "reject",
+    "reasoning": "",
+    "teacher_answer": "87.92",
+    "gold_answer": "87",
+    "answer_type": "integer",
+    "reject_reason": "原答案87是错误的。圆形喷水池周长为37.68米，由C=2πr得半径r=37.68÷(2×3.14)=6米。加上2米宽的小路，外圆半径为8米。小路面积为环形面积=3.14×(8²-6²)=3.14×(64-36)=3.14×28=87.92平方米，而不是87平方米。",
+    "cot_source": "deepseek_teacher_best_v1",
+    "teacher_model": "codex-gpt-5",
+    "prompt_version": "cot_teacher_best_v1"
+  }
+]

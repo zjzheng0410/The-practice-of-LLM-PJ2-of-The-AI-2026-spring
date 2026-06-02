@@ -1,0 +1,62 @@
+[
+  {
+    "id": "922",
+    "status": "reject",
+    "reasoning": "",
+    "teacher_answer": "12246",
+    "gold_answer": "5416.5",
+    "answer_type": "decimal",
+    "reject_reason": "题目给出底面半径30厘米，高50厘米，正确计算为π×30²+2π×30×50=900π+3000π=3900π，取π=3.14得12246平方厘米。原答案5416.5是按半径15厘米（即直径30厘米）计算的错误结果，少算了一半面积。",
+    "cot_source": "deepseek_teacher_best_v1",
+    "teacher_model": "codex-gpt-5",
+    "prompt_version": "cot_teacher_best_v1"
+  },
+  {
+    "id": "929",
+    "status": "reject",
+    "reasoning": "",
+    "teacher_answer": "4.7",
+    "gold_answer": "4.76",
+    "answer_type": "decimal",
+    "reject_reason": "甲到达时乙距工地24千米，乙车速度=24÷0.8=30km/h，乙行完全程需165÷30=5.5小时，甲比乙早到48分钟即0.8小时，所以甲用时5.5-0.8=4.7小时。原答案4.76计算有误。",
+    "cot_source": "deepseek_teacher_best_v1",
+    "teacher_model": "codex-gpt-5",
+    "prompt_version": "cot_teacher_best_v1"
+  },
+  {
+    "id": "951",
+    "status": "reject",
+    "reasoning": "",
+    "teacher_answer": "10/3",
+    "gold_answer": "103",
+    "answer_type": "integer",
+    "reject_reason": "甲单独完成需10天，乙效率是甲的2倍即乙单独完成需5天。两人合作效率=1/10+1/5=3/10，合作需要10/3≈3.33天。原答案103是错误的，可能是将分数10/3误写为103。",
+    "cot_source": "deepseek_teacher_best_v1",
+    "teacher_model": "codex-gpt-5",
+    "prompt_version": "cot_teacher_best_v1"
+  },
+  {
+    "id": "958",
+    "status": "reject",
+    "reasoning": "",
+    "teacher_answer": "2100",
+    "gold_answer": "1650",
+    "answer_type": "integer",
+    "reject_reason": "无盖鱼缸需要5个面：底面30×20=600，两个长侧面2×30×15=900，两个短侧面2×20×15=600，合计600+900+600=2100平方厘米。原答案1650只算了底面和一个长侧面加两个短侧面（30×20+30×15+2×20×15=1650），漏算了一个长侧面。",
+    "cot_source": "deepseek_teacher_best_v1",
+    "teacher_model": "codex-gpt-5",
+    "prompt_version": "cot_teacher_best_v1"
+  },
+  {
+    "id": "965",
+    "status": "reject",
+    "reasoning": "",
+    "teacher_answer": "5",
+    "gold_answer": "3",
+    "answer_type": "integer",
+    "reject_reason": "设再过x年妈妈年龄是小强的3倍，列方程46+x=3(12+x)，解得46+x=36+3x，10=2x，x=5。5年后妈妈51岁小强17岁，51÷17=3。原答案3是错误的，3年后妈妈49岁小强15岁，49÷15≠3。",
+    "cot_source": "deepseek_teacher_best_v1",
+    "teacher_model": "codex-gpt-5",
+    "prompt_version": "cot_teacher_best_v1"
+  }
+]

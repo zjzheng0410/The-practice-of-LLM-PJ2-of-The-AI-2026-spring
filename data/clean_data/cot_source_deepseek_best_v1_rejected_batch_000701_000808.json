@@ -1,0 +1,86 @@
+[
+  {
+    "id": "726",
+    "status": "reject",
+    "reasoning": "",
+    "teacher_answer": "无法确定",
+    "gold_answer": "28",
+    "answer_type": "integer",
+    "reject_reason": "题目文本不完整，只给出了\"一箱番茄连箱共重48千克\"，缺少\"一筐萝卜连筐\"的初始重量，无法求解箱子和筐的总重量。原答案28没有依据。",
+    "cot_source": "deepseek_teacher_best_v1",
+    "teacher_model": "codex-gpt-5",
+    "prompt_version": "cot_teacher_best_v1"
+  },
+  {
+    "id": "728",
+    "status": "reject",
+    "reasoning": "",
+    "teacher_answer": "150",
+    "gold_answer": "15",
+    "answer_type": "integer",
+    "reject_reason": "两车反向出发，48秒相遇，相对速度=400÷0.8=500米/分，乙速度=500−350=150米/分。原答案15差了一个数量级，正确答案应为150。",
+    "cot_source": "deepseek_teacher_best_v1",
+    "teacher_model": "codex-gpt-5",
+    "prompt_version": "cot_teacher_best_v1"
+  },
+  {
+    "id": "742",
+    "status": "reject",
+    "reasoning": "",
+    "teacher_answer": "37680",
+    "gold_answer": "37689",
+    "answer_type": "integer",
+    "reject_reason": "每节烟囱管侧面积=2×3.14×6×100=3768平方厘米，10节=37680平方厘米。原答案37689与标准计算值不符，正确答案应为37680。",
+    "cot_source": "deepseek_teacher_best_v1",
+    "teacher_model": "codex-gpt-5",
+    "prompt_version": "cot_teacher_best_v1"
+  },
+  {
+    "id": "757",
+    "status": "reject",
+    "reasoning": "",
+    "teacher_answer": "50200",
+    "gold_answer": "51000",
+    "answer_type": "integer",
+    "reject_reason": "每节通风管侧面积=3.14×20×80=5024平方厘米，10节=50240平方厘米，保留整百平方厘米为50200。原答案51000与计算结果相差甚远，不正确。",
+    "cot_source": "deepseek_teacher_best_v1",
+    "teacher_model": "codex-gpt-5",
+    "prompt_version": "cot_teacher_best_v1"
+  },
+  {
+    "id": "777",
+    "status": "reject",
+    "reasoning": "",
+    "teacher_answer": "21",
+    "gold_answer": "6",
+    "answer_type": "integer",
+    "reject_reason": "设1角x枚则x+5(27−x)=51，解得x=21，即1角硬币有21枚。原答案6是5角硬币的数量，答非所问，正确答案应为21。",
+    "cot_source": "deepseek_teacher_best_v1",
+    "teacher_model": "codex-gpt-5",
+    "prompt_version": "cot_teacher_best_v1"
+  },
+  {
+    "id": "802",
+    "status": "reject",
+    "reasoning": "",
+    "teacher_answer": "297",
+    "gold_answer": "140",
+    "answer_type": "integer",
+    "reject_reason": "设苹果x千克，则香蕉2x+17，鸭梨3x−11，总和x+(2x+17)+(3x−11)=846，解得x=140，香蕉=2×140+17=297千克。原答案140是苹果的重量，香蕉应为297。",
+    "cot_source": "deepseek_teacher_best_v1",
+    "teacher_model": "codex-gpt-5",
+    "prompt_version": "cot_teacher_best_v1"
+  },
+  {
+    "id": "807",
+    "status": "reject",
+    "reasoning": "",
+    "teacher_answer": "5000",
+    "gold_answer": "45000",
+    "answer_type": "integer",
+    "reject_reason": "设牛重x千克，大象重10x千克，则10x−x=4500，解得x=500，大象=10×500=5000千克。原答案45000差了9倍，正确答案应为5000。",
+    "cot_source": "deepseek_teacher_best_v1",
+    "teacher_model": "codex-gpt-5",
+    "prompt_version": "cot_teacher_best_v1"
+  }
+]

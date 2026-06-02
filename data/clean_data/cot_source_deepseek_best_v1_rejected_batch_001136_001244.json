@@ -1,0 +1,38 @@
+[
+  {
+    "id": "1173",
+    "status": "reject",
+    "reasoning": "",
+    "teacher_answer": "87.6",
+    "gold_answer": "87",
+    "answer_type": "integer",
+    "reject_reason": "原答案87不正确。438名小学生分5批，平均每批人数应为438÷5=87.6人，而不是87人。87只是438除以5的整数商部分，不是正确的平均数。",
+    "cot_source": "deepseek_teacher_best_v1",
+    "teacher_model": "codex-gpt-5",
+    "prompt_version": "cot_teacher_best_v1"
+  },
+  {
+    "id": "1182",
+    "status": "reject",
+    "reasoning": "",
+    "teacher_answer": "7",
+    "gold_answer": "8",
+    "answer_type": "integer",
+    "reject_reason": "原答案8不正确。2.7千克香油，每个瓶子最多盛0.4千克，需要2.7÷0.4=6.75个瓶子，进一法取整需要7个瓶子，而不是8个。",
+    "cot_source": "deepseek_teacher_best_v1",
+    "teacher_model": "codex-gpt-5",
+    "prompt_version": "cot_teacher_best_v1"
+  },
+  {
+    "id": "1187",
+    "status": "reject",
+    "reasoning": "",
+    "teacher_answer": "148",
+    "gold_answer": "48",
+    "answer_type": "integer",
+    "reject_reason": "原答案48不正确。学校食堂有大米580千克，每天吃72千克，6天共吃72×6=432千克，剩余大米应为580-432=148千克，而不是48千克。",
+    "cot_source": "deepseek_teacher_best_v1",
+    "teacher_model": "codex-gpt-5",
+    "prompt_version": "cot_teacher_best_v1"
+  }
+]
