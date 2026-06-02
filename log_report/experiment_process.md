@@ -36,3 +36,11 @@
 - 扩展增强单测，覆盖 registry、clean-008 回归、clean-010 触发规则、专属后缀和 run 级报告。
 - 生成 `train_sft_clean010.json` 与 `augment_report_clean010.json`，原始 10902 条，新增 1248 条，增强后 12150 条。
 - train/valid 同题 overlap 为 0，单源样本最多复制 1 次，输出重复 id 为 0，重复源 id 重编号 18 条。
+
+## 2026-06-02 推理期三源组合
+
+- 新增 `ensemble` 包，拆分题面 selector、raw 读取校验和组合核心逻辑。
+- 重构 valid 组合评估入口，复用同一套 selector、prediction IO 与 combiner。
+- 新增 test 组合提交入口，只读取三源 raw，输出 ensemble CSV 与 provenance JSONL。
+- 新增组合单测，覆盖字段校验、id 对齐、选择规则、答案字段显式指定和输出覆盖保护。
+- valid_v2 组合复现 `374/1000 = 0.374`，单模型基准为 clean007 `358/1000`、clean008 `344/1000`、clean010 `348/1000`。

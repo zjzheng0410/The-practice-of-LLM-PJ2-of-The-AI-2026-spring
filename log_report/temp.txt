@@ -461,6 +461,63 @@ for exp in experiments:
 PY
 ```
 
+## 推理期三源组合
+
+新增组合单测：
+
+```bash
+python -m unittest discover -s test -p test_ensemble.py
+```
+
+全量单测：
+
+```bash
+python -m unittest discover -s test
+```
+
+valid_v2 组合复现：
+
+```bash
+python -m evaluation.evaluate_ensemble
+```
+
+后续生成三源 test raw：
+
+```bash
+python -u infer.py \
+  --checkpoint output/clean-007/checkpoint-3410 \
+  --test-file data/raw_data/test.json \
+  --experiment-id clean-007-ensemble-src \
+  --max-new-tokens 32
+```
+
+```bash
+python -u infer.py \
+  --checkpoint output/clean-008/checkpoint-4280 \
+  --test-file data/raw_data/test.json \
+  --experiment-id clean-008-ensemble-src \
+  --max-new-tokens 32
+```
+
+```bash
+python -u infer.py \
+  --checkpoint output/clean-010/checkpoint-3800 \
+  --test-file data/raw_data/test.json \
+  --experiment-id clean-010-ensemble-src \
+  --max-new-tokens 32
+```
+
+后续合并三源 raw：
+
+```bash
+python -u ensemble_infer.py \
+  --test-file data/raw_data/test.json \
+  --clean007-raw submit/raw/clean-007-ensemble-src.jsonl \
+  --clean008-raw submit/raw/clean-008-ensemble-src.jsonl \
+  --clean010-raw submit/raw/clean-010-ensemble-src.jsonl \
+  --experiment-id ensemble-007008010
+```
+
 查看两个实验 ranking 前 5 名：
 
 ```bash
