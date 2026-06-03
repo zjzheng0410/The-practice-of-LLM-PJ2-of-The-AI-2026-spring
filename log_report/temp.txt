@@ -309,7 +309,7 @@ CoT 测试集推理：
 
 ```bash
 python -u infer.py \
-  --checkpoint <best_checkpoint> \
+  --checkpoint output/cot-001/checkpoint-2000 \
   --test-file data/raw_data/test.json \
   --experiment-id cot-001-best \
   --prompt-profile cot \
@@ -604,4 +604,24 @@ for exp in ["clean-007", "clean-010"]:
             "total=", row["total"],
         )
 PY
+```
+
+## 单进程 Batch 推理改造
+
+全量单测：
+
+```bash
+env PYTHONDONTWRITEBYTECODE=1 python -m unittest discover -s test
+```
+
+CoT checkpoint2 batch 推理：
+
+```bash
+python -u infer.py \
+  --checkpoint output/cot-001/checkpoint-2000 \
+  --test-file data/raw_data/test.json \
+  --experiment-id cot-001-best \
+  --prompt-profile cot \
+  --max-new-tokens 128 \
+  --batch-size 8
 ```

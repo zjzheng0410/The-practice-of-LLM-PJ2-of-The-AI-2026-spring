@@ -1,0 +1,46 @@
+[
+  {
+    "checkpoint": "output/cot-001/checkpoint-2000",
+    "checkpoint_name": "checkpoint-2000",
+    "step": 2000,
+    "accuracy": 0.544,
+    "postprocess_failure_rate": 0.001,
+    "correct": 544,
+    "total": 1000,
+    "prompt_profile": "cot",
+    "metrics_file": "eval_result/valid_v2/cot-001/checkpoint-2000/metrics.json"
+  },
+  {
+    "checkpoint": "output/cot-001/checkpoint-3310",
+    "checkpoint_name": "checkpoint-3310",
+    "step": 3310,
+    "accuracy": 0.53,
+    "postprocess_failure_rate": 0.0,
+    "correct": 530,
+    "total": 1000,
+    "prompt_profile": "cot",
+    "metrics_file": "eval_result/valid_v2/cot-001/checkpoint-3310/metrics.json"
+  },
+  {
+    "checkpoint": "output/cot-001/checkpoint-3000",
+    "checkpoint_name": "checkpoint-3000",
+    "step": 3000,
+    "accuracy": 0.527,
+    "postprocess_failure_rate": 0.0,
+    "correct": 527,
+    "total": 1000,
+    "prompt_profile": "cot",
+    "metrics_file": "eval_result/valid_v2/cot-001/checkpoint-3000/metrics.json"
+  },
+  {
+    "checkpoint": "output/cot-001/checkpoint-1000",
+    "checkpoint_name": "checkpoint-1000",
+    "step": 1000,
+    "accuracy": 0.491,
+    "postprocess_failure_rate": 0.0,
+    "correct": 491,
+    "total": 1000,
+    "prompt_profile": "cot",
+    "metrics_file": "eval_result/valid_v2/cot-001/checkpoint-1000/metrics.json"
+  }
+]

@@ -54,3 +54,11 @@
 - 新增 CoT 数据审计入口，只审计现有 accepted CoT 训练集，不生成新数据，不补齐 reject 样本。
 - 本次 CoT 数据微调/标注数据由调用 DeepSeek API 完成，本阶段直接复用现有 CoT accepted 数据进行单模型验证。
 - 本阶段不修改 ensemble、selector 和组合推理流程。
+
+## 2026-06-03 单进程 Batch 推理改造
+
+- 新增批量生成封装，统一处理 chat template、left padding、attention mask、generate 和批量 decode。
+- 保留单条生成接口，并改为复用批量接口，避免单条与批量生成逻辑分叉。
+- 改造推理入口，新增 `--batch-size`，按连续 batch 调度样本，默认 batch size 为 8。
+- 保持逐条答案抽取、CSV 输出、raw JSONL 字段和样本顺序不变，每个 batch 写完后刷新输出。
+- 保持 `infer.py` 默认 checkpoint 和默认 `direct` profile 不变，CoT checkpoint2 仅写入运行命令记录。

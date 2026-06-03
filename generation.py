@@ -44,14 +44,45 @@ def predict_response(
     tokenizer: Any,
     max_new_tokens: int,
 ) -> str:
-    text = tokenizer.apply_chat_template(
-        messages,
-        tokenize=False,
-        add_generation_prompt=True,
+    responses = predict_responses(
+        messages_batch=[messages],
+        model=model,
+        tokenizer=tokenizer,
+        max_new_tokens=max_new_tokens,
     )
-    model_inputs = tokenizer([text], return_tensors="pt")
+    if len(responses) != 1:
+        raise ValueError(f"单条生成返回数量异常：{len(responses)}")
+    return responses[0]
+
+
+def predict_responses(
+    messages_batch: list[list[dict[str, str]]],
+    model: Any,
+    tokenizer: Any,
+    max_new_tokens: int,
+) -> list[str]:
+    if not messages_batch:
+        raise ValueError("messages_batch 不能为空")
+
+    texts = [
+        tokenizer.apply_chat_template(
+            messages,
+            tokenize=False,
+            add_generation_prompt=True,
+        )
+        for messages in messages_batch
+    ]
+
+    original_padding_side = tokenizer.padding_side
+    tokenizer.padding_side = "left"
+    try:
+        model_inputs = tokenizer(texts, return_tensors="pt", padding=True)
+    finally:
+        tokenizer.padding_side = original_padding_side
+
     device = _model_input_device(model)
     model_inputs = {key: value.to(device) for key, value in model_inputs.items()}
+    input_token_count = model_inputs["input_ids"].shape[1]
 
     # 显式传入 attention_mask 和 pad_token_id，避免生成行为依赖 transformers 的隐式推断。
     with torch.no_grad():
@@ -63,11 +94,9 @@ def predict_response(
             pad_token_id=tokenizer.pad_token_id,
         )
 
-    generated_ids = [
-        output_ids[len(input_ids) :]
-        for input_ids, output_ids in zip(model_inputs["input_ids"], generated_ids)
-    ]
-    return tokenizer.batch_decode(generated_ids, skip_special_tokens=True)[0]
+    # batch 输入已经 pad 到共同长度，统一从共同输入长度后截取新增 token。
+    generated_ids = generated_ids[:, input_token_count:]
+    return tokenizer.batch_decode(generated_ids, skip_special_tokens=True)
 
 
 def load_json_rows(path: Path) -> list[dict[str, Any]]:
