@@ -622,6 +622,6 @@ python -u infer.py \
   --test-file data/raw_data/test.json \
   --experiment-id cot-001-best \
   --prompt-profile cot \
-  --max-new-tokens 128 \
-  --batch-size 8
+  --max-new-tokens 512 \
+  --batch-size 96
 ```
