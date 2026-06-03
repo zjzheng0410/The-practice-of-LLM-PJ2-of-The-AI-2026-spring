@@ -1,26 +1,26 @@
 [
   {
     "id": "11812",
+    "status": "reject",
+    "reasoning": "",
+    "teacher_answer": "62.5%",
     "gold_answer": "37.5%",
     "answer_type": "percent",
+    "reject_reason": "独立计算与gold_answer不一致：果园有梨树400棵，桃树250棵，求桃树是梨树的百分之几，用桃树棵数除以梨树棵数，250÷400=0.625=62.5%。gold_answer=37.5%，疑似错误计算为(400-250)÷400=150÷400=37.5%，混淆了“桃树是梨树的百分之几”与“桃树比梨树少百分之几”。",
     "cot_source": "deepseek_teacher_best_v1",
     "teacher_model": "codex-gpt-5",
-    "prompt_version": "cot_teacher_best_v1",
-    "reasoning": "",
-    "reject_reason": "教师答案62.5%与标准答案37.5%不一致",
-    "status": "reject",
-    "teacher_answer": "62.5%"
+    "prompt_version": "cot_teacher_best_v1"
   },
   {
     "id": "11871",
+    "status": "reject",
+    "reasoning": "",
+    "teacher_answer": "72.75",
     "gold_answer": "72.25",
     "answer_type": "decimal",
+    "reject_reason": "独立计算与gold_answer不一致：青菜7.5千克，每千克1.6元，青菜花费7.5×1.6=12元；肉4.05千克，每千克15元，肉花费4.05×15=60.75元；合计12+60.75=72.75元。gold_answer=72.25，与独立计算结果相差0.5元，无法用题目条件推出。",
     "cot_source": "deepseek_teacher_best_v1",
     "teacher_model": "codex-gpt-5",
-    "prompt_version": "cot_teacher_best_v1",
-    "reasoning": "",
-    "reject_reason": "教师答案72.75与标准答案72.25不一致",
-    "status": "reject",
-    "teacher_answer": "72.75"
+    "prompt_version": "cot_teacher_best_v1"
   }
 ]
