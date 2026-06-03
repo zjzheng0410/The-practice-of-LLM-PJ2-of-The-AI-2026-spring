@@ -62,3 +62,12 @@
 - 改造推理入口，新增 `--batch-size`，按连续 batch 调度样本，默认 batch size 为 8。
 - 保持逐条答案抽取、CSV 输出、raw JSONL 字段和样本顺序不变，每个 batch 写完后刷新输出。
 - 保持 `infer.py` 默认 checkpoint 和默认 `direct` profile 不变，CoT checkpoint2 仅写入运行命令记录。
+
+## 2026-06-03 CoT 多 checkpoint 投票
+
+- 新增 CoT checkpoint 投票核心，按 source 顺序读取候选，基于规范化答案做多数投票和平票选择。
+- 扩展 raw source 参数解析，支持可变数量 `name=raw.jsonl` 输入，并保持 source 顺序作为投票优先级。
+- 新增 valid 投票评估入口，输出 metrics、raw provenance 和 wrong 结果。
+- 新增 test 投票提交入口，只读取 checkpoint raw，输出无表头 CSV 与 provenance JSONL，并保护已有输出。
+- 新增投票、source 解析和投票评估统计测试，覆盖无效候选跳过、全部无效 primary 回退和 primary 对比统计。
+- valid_v2 top4 投票复现 `577/1000 = 0.577`，相比 primary `cot2000` 的 `544/1000 = 0.544` 增加 33 题。

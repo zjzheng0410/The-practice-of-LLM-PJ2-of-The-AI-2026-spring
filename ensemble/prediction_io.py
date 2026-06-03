@@ -47,6 +47,37 @@ def build_source_configs(
     ]
 
 
+def parse_source_arg(value: str, answer_field: str) -> SourceConfig:
+    if not isinstance(value, str) or not value:
+        raise ValueError("--source 必须是 name=raw_path")
+    if "=" not in value:
+        raise ValueError(f"--source 缺少 '='：{value}")
+
+    name, raw_path_text = value.split("=", 1)
+    name = name.strip()
+    raw_path_text = raw_path_text.strip()
+    if not name:
+        raise ValueError(f"--source source name 不能为空：{value}")
+    if not raw_path_text:
+        raise ValueError(f"--source raw path 不能为空：{value}")
+
+    raw_path = Path(raw_path_text)
+    if not raw_path.is_file():
+        raise FileNotFoundError(f"--source raw 文件不存在：{raw_path}")
+    return SourceConfig(name=name, raw_path=raw_path, answer_field=answer_field)
+
+
+def parse_source_args(values: list[str], answer_field: str) -> list[SourceConfig]:
+    if not values:
+        raise ValueError("至少需要一个 --source")
+    source_configs = [
+        parse_source_arg(value=value, answer_field=answer_field)
+        for value in values
+    ]
+    validate_source_configs(source_configs)
+    return source_configs
+
+
 def validate_source_configs(source_configs: list[SourceConfig]) -> None:
     if not source_configs:
         raise ValueError("source_configs 不能为空")
@@ -126,4 +157,3 @@ def read_answer(config: SourceConfig, record: dict[str, Any], row_id: str) -> An
 def source_config_map(source_configs: list[SourceConfig]) -> dict[str, SourceConfig]:
     validate_source_configs(source_configs)
     return {config.name: config for config in source_configs}
-

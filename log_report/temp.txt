@@ -625,3 +625,79 @@ python -u infer.py \
   --max-new-tokens 512 \
   --batch-size 96
 ```
+
+## CoT 多 checkpoint 投票
+
+本次实际运行轻量验证：
+
+```bash
+env PYTHONDONTWRITEBYTECODE=1 python -m unittest discover -s test
+```
+
+```bash
+python -m evaluation.evaluate_checkpoint_vote \
+  --valid-file data/clean_data/valid_sft_v2.json \
+  --source cot2000=eval_result/valid_v2/cot-001/checkpoint-2000/raw.jsonl \
+  --source cot3310=eval_result/valid_v2/cot-001/checkpoint-3310/raw.jsonl \
+  --source cot3000=eval_result/valid_v2/cot-001/checkpoint-3000/raw.jsonl \
+  --source cot1000=eval_result/valid_v2/cot-001/checkpoint-1000/raw.jsonl \
+  --experiment-id cot-001-vote-top4 \
+  --output-dir eval_result \
+  --split-name valid_v2 \
+  --strategy majority
+```
+
+后续生成四个 checkpoint test raw 模板：
+
+```bash
+python -u infer.py \
+  --checkpoint output/cot-001/checkpoint-2000 \
+  --test-file data/raw_data/test.json \
+  --experiment-id cot-001-cp2000 \
+  --prompt-profile cot \
+  --max-new-tokens 512 \
+  --batch-size 128
+```
+
+```bash
+python -u infer.py \
+  --checkpoint output/cot-001/checkpoint-3310 \
+  --test-file data/raw_data/test.json \
+  --experiment-id cot-001-cp3310 \
+  --prompt-profile cot \
+  --max-new-tokens 512 \
+  --batch-size 128
+```
+
+```bash
+python -u infer.py \
+  --checkpoint output/cot-001/checkpoint-3000 \
+  --test-file data/raw_data/test.json \
+  --experiment-id cot-001-cp3000 \
+  --prompt-profile cot \
+  --max-new-tokens 512 \
+  --batch-size 128
+```
+
+```bash
+python -u infer.py \
+  --checkpoint output/cot-001/checkpoint-1000 \
+  --test-file data/raw_data/test.json \
+  --experiment-id cot-001-cp1000 \
+  --prompt-profile cot \
+  --max-new-tokens 512 \
+  --batch-size 128
+```
+
+后续合并 test raw 模板：
+
+```bash
+python -u cot_checkpoint_vote_infer.py \
+  --test-file data/raw_data/test.json \
+  --source cot2000=submit/raw/cot-001-cp2000.jsonl \
+  --source cot3310=submit/raw/cot-001-cp3310.jsonl \
+  --source cot3000=submit/raw/cot-001-cp3000.jsonl \
+  --source cot1000=submit/raw/cot-001-cp1000.jsonl \
+  --experiment-id cot-001-vote-top4 \
+  --strategy majority
+```

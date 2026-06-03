@@ -114,30 +114,36 @@ def main() -> None:
                         final_answer = raw_response.strip()
                         answer_type = "unknown"
                         extract_status = "disabled"
+                        error = None
                     else:
-                        extracted = extract_final_answer(raw_response)
-                        final_answer = extracted.answer
-                        answer_type = extracted.answer_type
-                        extract_status = extracted.status
+                        error = None
+                        try:
+                            extracted = extract_final_answer(raw_response)
+                            final_answer = extracted.answer
+                            answer_type = extracted.answer_type
+                            extract_status = extracted.status
+                        except (TypeError, ValueError) as exc:
+                            final_answer = "Null"
+                            answer_type = "unknown"
+                            extract_status = "error"
+                            error = str(exc)
+
+                    raw_record = {
+                        "id": row["id"],
+                        "question": row["question"],
+                        "raw_response": raw_response,
+                        "answer": final_answer,
+                        "answer_type": answer_type,
+                        "extract_status": extract_status,
+                        "prompt_profile": profile.name,
+                        "answer_marker": profile.answer_marker,
+                        "max_new_tokens": max_new_tokens,
+                    }
+                    if error is not None:
+                        raw_record["error"] = error
 
                     writer.writerow([row["id"], final_answer])
-                    raw_file.write(
-                        json.dumps(
-                            {
-                                "id": row["id"],
-                                "question": row["question"],
-                                "raw_response": raw_response,
-                                "answer": final_answer,
-                                "answer_type": answer_type,
-                                "extract_status": extract_status,
-                                "prompt_profile": profile.name,
-                                "answer_marker": profile.answer_marker,
-                                "max_new_tokens": max_new_tokens,
-                            },
-                            ensure_ascii=False,
-                        )
-                        + "\n"
-                    )
+                    raw_file.write(json.dumps(raw_record, ensure_ascii=False) + "\n")
                 csv_file.flush()
                 raw_file.flush()
                 progress.update(len(batch_rows))

@@ -1,0 +1,71 @@
+{
+  "overall": {
+    "total": 1000,
+    "correct": 577,
+    "accuracy": 0.577
+  },
+  "single_source": {
+    "cot2000": {
+      "total": 1000,
+      "correct": 544,
+      "accuracy": 0.544
+    },
+    "cot3310": {
+      "total": 1000,
+      "correct": 530,
+      "accuracy": 0.53
+    },
+    "cot3000": {
+      "total": 1000,
+      "correct": 527,
+      "accuracy": 0.527
+    },
+    "cot1000": {
+      "total": 1000,
+      "correct": 491,
+      "accuracy": 0.491
+    }
+  },
+  "vote_stats": {
+    "tie_break_count": 206,
+    "all_invalid_fallback_count": 0,
+    "vote_pattern_counts": {
+      "1-1-1-1": 154,
+      "2-1-1": 193,
+      "2-2": 52,
+      "3-1": 193,
+      "4": 408
+    },
+    "selected_source_counts": {
+      "cot2000": 849,
+      "cot3310": 142,
+      "cot3000": 9
+    }
+  },
+  "primary_comparison": {
+    "primary_source": "cot2000",
+    "same_as_primary": 849,
+    "changed_vs_primary": 151,
+    "improved_vs_primary": 44,
+    "worsened_vs_primary": 11
+  },
+  "source_raw_files": {
+    "cot2000": "eval_result/valid_v2/cot-001/checkpoint-2000/raw.jsonl",
+    "cot3310": "eval_result/valid_v2/cot-001/checkpoint-3310/raw.jsonl",
+    "cot3000": "eval_result/valid_v2/cot-001/checkpoint-3000/raw.jsonl",
+    "cot1000": "eval_result/valid_v2/cot-001/checkpoint-1000/raw.jsonl"
+  },
+  "source_order": [
+    "cot2000",
+    "cot3310",
+    "cot3000",
+    "cot1000"
+  ],
+  "strategy": "majority",
+  "tie_break_policy": "平票按 --source 输入顺序选择，全部无效回到首个 source",
+  "experiment_id": "cot-001-vote-top4",
+  "valid_file": "data/clean_data/valid_sft_v2.json",
+  "metrics_output": "eval_result/valid_v2/cot-001-vote-top4/metrics.json",
+  "raw_output": "eval_result/valid_v2/cot-001-vote-top4/raw.jsonl",
+  "wrong_output": "eval_result/valid_v2/cot-001-vote-top4/wrong.jsonl"
+}
