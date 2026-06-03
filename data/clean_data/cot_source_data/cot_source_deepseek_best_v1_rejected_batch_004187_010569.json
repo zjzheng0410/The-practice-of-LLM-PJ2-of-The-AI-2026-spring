@@ -1,0 +1,14 @@
+[
+  {
+    "id": "10541",
+    "status": "reject",
+    "reasoning": "",
+    "teacher_answer": "25",
+    "gold_answer": "25",
+    "answer_type": "integer",
+    "reject_reason": "独立计算：34吨按8:7分配，九月=34×8/15≈18.13吨，与给定答案25不一致，无法通过题目条件推出25。",
+    "cot_source": "deepseek_teacher_best_v1",
+    "teacher_model": "codex-gpt-5",
+    "prompt_version": "cot_teacher_best_v1"
+  }
+]
