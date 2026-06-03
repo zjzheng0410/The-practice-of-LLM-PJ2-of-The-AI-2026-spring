@@ -256,6 +256,72 @@ for exp in ["clean-006", "clean-007"]:
 PY
 ```
 
+## CoT SFT 单模型接入
+
+本阶段直接复用 DeepSeek API 生成并筛选后的 CoT 微调/标注 accepted 数据，不重新生成 CoT，不补齐 reject 样本，不接入 ensemble。
+
+CoT 数据审计：
+
+```bash
+python -m data_preprocess.cot_audit \
+  --train-file data/clean_data/train_sft_cot_v1.json \
+  --accept-file data/clean_data/cot_source_deepseek_best_v1_accept_all.json \
+  --reject-file data/clean_data/cot_source_deepseek_best_v1_reject_all.json \
+  --report-file data/clean_data/cot_report_v1.json
+```
+
+CoT SFT 训练：
+
+```bash
+python -u qwen_ft.py \
+  --train-file data/clean_data/train_sft_cot_v1.json \
+  --valid-file "" \
+  --target-field cot_response \
+  --output-dir output/cot-001 \
+  --experiment-id cot-001 \
+  --epochs 5 \
+  --learning-rate 1e-4 \
+  --max-length 768 \
+  --lora-r 8 \
+  --save-steps 1000
+```
+
+CoT 多 checkpoint 生成式评估：
+
+```bash
+python -m evaluation.evaluate_checkpoints \
+  --experiment-dir output/cot-001 \
+  --experiment-id cot-001 \
+  --valid-file data/clean_data/valid_sft_v2.json \
+  --prompt-profile cot \
+  --max-new-tokens 128 \
+  --output-dir eval_result \
+  --split-name valid_v2
+```
+
+查看 CoT 最佳 checkpoint：
+
+```bash
+python -m json.tool eval_result/valid_v2/cot-001/best_checkpoint.json
+```
+
+CoT 测试集推理：
+
+```bash
+python -u infer.py \
+  --checkpoint <best_checkpoint> \
+  --test-file data/raw_data/test.json \
+  --experiment-id cot-001-best \
+  --prompt-profile cot \
+  --max-new-tokens 128
+```
+
+全量单测：
+
+```bash
+env PYTHONDONTWRITEBYTECODE=1 python -m unittest discover -s test
+```
+
 若需要用最佳 checkpoint 生成测试集提交，先从 `best_checkpoint.json` 取路径，再执行：
 
 ```bash

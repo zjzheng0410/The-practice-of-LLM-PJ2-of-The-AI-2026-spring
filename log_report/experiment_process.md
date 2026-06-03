@@ -44,3 +44,13 @@
 - 新增 test 组合提交入口，只读取三源 raw，输出 ensemble CSV 与 provenance JSONL。
 - 新增组合单测，覆盖字段校验、id 对齐、选择规则、答案字段显式指定和输出覆盖保护。
 - valid_v2 组合复现 `374/1000 = 0.374`，单模型基准为 clean007 `358/1000`、clean008 `344/1000`、clean010 `348/1000`。
+
+## 2026-06-03 CoT SFT 单模型接入
+
+- 新增 `prompting` 包，统一管理 direct/cot profile、训练目标字段、最终答案标记和默认生成长度。
+- 改造答案抽取逻辑，优先读取 `最终答案：` 后的最终答案，避免 CoT 正文中间数字干扰。
+- 改造训练入口，新增 `--target-field`，CoT SFT 固定读取 `cot_response`，支持 `--valid-file ""` 关闭 Trainer eval dataset。
+- 改造推理和生成式评估入口，新增 `--prompt-profile`，raw、metrics 与 ranking 记录 profile provenance。
+- 新增 CoT 数据审计入口，只审计现有 accepted CoT 训练集，不生成新数据，不补齐 reject 样本。
+- 本次 CoT 数据微调/标注数据由调用 DeepSeek API 完成，本阶段直接复用现有 CoT accepted 数据进行单模型验证。
+- 本阶段不修改 ensemble、selector 和组合推理流程。

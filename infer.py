@@ -7,6 +7,7 @@ from tqdm import tqdm
 
 from answer_utils import extract_final_answer
 from generation import DEFAULT_BASE_MODEL, build_messages, load_json_rows, load_model_and_tokenizer, predict_response
+from prompting.profiles import get_prompt_profile, resolve_max_new_tokens, select_instruction
 
 
 DEFAULT_CHECKPOINT = "./output/Qwen/checkpoint-3750/"
@@ -42,7 +43,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--test-file", default=DEFAULT_TEST_FILE, help="测试集 JSON 路径")
     parser.add_argument("--output", default=None, help="输出 CSV 文件名或路径")
     parser.add_argument("--raw-output", default=None, help="原始预测 JSONL 文件名或路径")
-    parser.add_argument("--max-new-tokens", type=int, default=32, help="最大生成 token 数")
+    parser.add_argument("--max-new-tokens", type=int, default=None, help="最大生成 token 数")
+    parser.add_argument("--prompt-profile", default="direct", help="提示词 profile：direct 或 cot")
     parser.add_argument("--experiment-id", default=None, help="实验编号，用于自动命名输出文件")
     parser.add_argument("--no-postprocess", action="store_true", help="关闭答案后处理")
     return parser.parse_args()
@@ -50,8 +52,8 @@ def parse_args() -> argparse.Namespace:
 
 def main() -> None:
     args = parse_args()
-    if args.max_new_tokens <= 0:
-        raise ValueError("--max-new-tokens 必须为正整数")
+    profile = get_prompt_profile(args.prompt_profile)
+    max_new_tokens = resolve_max_new_tokens(profile, args.max_new_tokens)
 
     output_path, raw_path = _resolve_output_paths(args)
     output_path.parent.mkdir(parents=True, exist_ok=True)
@@ -69,12 +71,13 @@ def main() -> None:
                 if key not in row:
                     raise KeyError(f"测试集第 {index} 条样本缺少字段：{key}")
 
-            messages = build_messages(str(row["instruction"]), str(row["question"]))
+            instruction = select_instruction(profile, str(row["instruction"]))
+            messages = build_messages(instruction, str(row["question"]))
             raw_response = predict_response(
                 messages=messages,
                 model=model,
                 tokenizer=tokenizer,
-                max_new_tokens=args.max_new_tokens,
+                max_new_tokens=max_new_tokens,
             ).replace("\n", " ")
 
             if args.no_postprocess:
@@ -97,6 +100,9 @@ def main() -> None:
                         "answer": final_answer,
                         "answer_type": answer_type,
                         "extract_status": extract_status,
+                        "prompt_profile": profile.name,
+                        "answer_marker": profile.answer_marker,
+                        "max_new_tokens": max_new_tokens,
                     },
                     ensure_ascii=False,
                 )

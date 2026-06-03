@@ -19,6 +19,7 @@ _PERCENT_EXTRACT_RE = re.compile(r"(?<![\w/])-?\d+(?:\.\d+)?%(?![\w/%])")
 _MIXED_FRACTION_EXTRACT_RE = re.compile(r"(?<![\w/])-?\d+_\d+/\d+(?![\w/%])")
 _FRACTION_EXTRACT_RE = re.compile(r"(?<![\w/])-?\d+/\d+(?![\w/%])")
 _NUMBER_EXTRACT_RE = re.compile(r"(?<![\w/])-?\d+(?:\.\d+)?(?![\w/%])")
+_FINAL_MARKER_RE = re.compile(r"最终答案\s*[:：]")
 
 
 @dataclass(frozen=True)
@@ -89,7 +90,7 @@ def classify_answer(value: Any) -> str:
     return "unknown"
 
 
-def _cleanup_model_output(raw_output: Any) -> str:
+def _normalize_model_output_text(raw_output: Any) -> str:
     if raw_output is None:
         raise ValueError("模型输出为空：None")
     if isinstance(raw_output, (list, dict, tuple, set)):
@@ -99,7 +100,11 @@ def _cleanup_model_output(raw_output: Any) -> str:
     text = _strip_outer_quotes(text)
     text = text.replace("％", "%").replace("﹪", "%").replace("；", ";").replace("／", "/")
     text = re.sub(r"\s+", " ", text).strip()
+    return text
 
+
+def _cleanup_model_output(raw_output: Any) -> str:
+    text = _normalize_model_output_text(raw_output)
     # 只删除开头的固定答案前缀；不删除正文里的词，避免把解释文本误改成答案。
     prefixes = (
         r"^最终答案(?:是|为)?\s*[:：]?\s*",
@@ -126,10 +131,9 @@ def _last_match(pattern: re.Pattern[str], text: str) -> str | None:
     return matches[-1]
 
 
-def extract_final_answer(raw_output: Any) -> ExtractionResult:
-    text = _cleanup_model_output(raw_output)
+def _extract_from_text(text: str, allow_unknown_short: bool) -> ExtractionResult | None:
     if not text:
-        return ExtractionResult(answer="", answer_type="unknown", status="empty")
+        return None
 
     # 多答案必须先抽取，否则“180;4”会被普通数字规则截成“180”。
     for pattern in (
@@ -148,8 +152,40 @@ def extract_final_answer(raw_output: Any) -> ExtractionResult:
     # 判断题只接受完整短答案，避免把解释句中的“是”“能”等字误抽成最终答案。
     if normalized in YES_NO_ANSWERS:
         return ExtractionResult(answer=normalized, answer_type=classify_answer(normalized), status="matched")
-    if len(normalized) <= SHORT_UNKNOWN_LIMIT:
+    if allow_unknown_short and len(normalized) <= SHORT_UNKNOWN_LIMIT:
         return ExtractionResult(answer=normalized, answer_type=classify_answer(normalized), status="unknown_short")
+    return None
+
+
+def _extract_after_final_marker(text: str) -> ExtractionResult | None:
+    matches = list(_FINAL_MARKER_RE.finditer(text))
+    if not matches:
+        return None
+
+    marker = matches[-1]
+    tail = text[marker.end() :].strip()
+    try:
+        result = _extract_from_text(tail, allow_unknown_short=True)
+    except ValueError as exc:
+        raise ValueError(f"最终答案标记后无法抽取答案：{tail[:80]}") from exc
+    if result is None:
+        raise ValueError(f"最终答案标记后无法抽取答案：{tail[:80]}")
+    return result
+
+
+def extract_final_answer(raw_output: Any) -> ExtractionResult:
+    marker_text = _normalize_model_output_text(raw_output)
+    marked_result = _extract_after_final_marker(marker_text)
+    if marked_result is not None:
+        return marked_result
+
+    text = _cleanup_model_output(raw_output)
+    if not text:
+        return ExtractionResult(answer="", answer_type="unknown", status="empty")
+
+    result = _extract_from_text(text, allow_unknown_short=True)
+    if result is not None:
+        return result
     raise ValueError(f"无法从模型输出中抽取答案：{text[:80]}")
 
 

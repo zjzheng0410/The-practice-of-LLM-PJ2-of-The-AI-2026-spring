@@ -32,9 +32,20 @@ def discover_checkpoints(experiment_dir: Path) -> list[Path]:
 
 
 def _require_number(metrics: dict[str, Any], key: str) -> int | float:
-    value = metrics.get(key)
+    if key not in metrics:
+        raise ValueError(f"metrics 缺少数值字段：{key}")
+    value = metrics[key]
     if not isinstance(value, (int, float)):
         raise ValueError(f"metrics 缺少数值字段：{key}")
+    return value
+
+
+def _require_string(metrics: dict[str, Any], key: str) -> str:
+    if key not in metrics:
+        raise ValueError(f"metrics 缺少字符串字段：{key}")
+    value = metrics[key]
+    if not isinstance(value, str):
+        raise ValueError(f"metrics 缺少字符串字段：{key}")
     return value
 
 
@@ -52,6 +63,7 @@ def build_ranking_rows(metric_records: list[dict[str, Any]]) -> list[dict[str, A
                 "postprocess_failure_rate": _require_number(metrics, "postprocess_failure_rate"),
                 "correct": _require_number(metrics, "correct"),
                 "total": _require_number(metrics, "total"),
+                "prompt_profile": _require_string(metrics, "prompt_profile"),
                 "metrics_file": str(metrics["metrics_output"]),
             }
         )
@@ -66,6 +78,7 @@ def build_best_checkpoint(
     experiment_id: str,
     valid_file: str,
     ranking_file: Path,
+    prompt_profile: str,
 ) -> dict[str, Any]:
     if not ranking_rows:
         raise ValueError("ranking 为空，无法选择 best checkpoint")
@@ -73,6 +86,7 @@ def build_best_checkpoint(
     return {
         "experiment_id": experiment_id,
         "valid_file": valid_file,
+        "prompt_profile": prompt_profile,
         "selection_metric": "valid_v2_generation_accuracy",
         "selected_checkpoint": selected["checkpoint"],
         "selected_step": selected["step"],
@@ -101,6 +115,7 @@ def _write_ranking_csv(path: Path, rows: list[dict[str, Any]]) -> None:
         "postprocess_failure_rate",
         "correct",
         "total",
+        "prompt_profile",
         "metrics_file",
     ]
     with path.open("w", encoding="utf-8", newline="") as file:
@@ -115,8 +130,9 @@ def evaluate_all_checkpoints(
     experiment_id: str,
     valid_file: str,
     output_dir: str,
-    max_new_tokens: int,
+    max_new_tokens: int | None,
     split_name: str = DEFAULT_SPLIT_NAME,
+    prompt_profile: str = "direct",
 ) -> dict[str, Any]:
     from evaluation.evaluate_checkpoint import evaluate_checkpoint
 
@@ -134,6 +150,7 @@ def evaluate_all_checkpoints(
                 max_new_tokens=max_new_tokens,
                 split_name=split_name,
                 result_dir=summary_dir / checkpoint.name,
+                prompt_profile=prompt_profile,
             )
         )
 
@@ -146,6 +163,7 @@ def evaluate_all_checkpoints(
         experiment_id=experiment_id,
         valid_file=valid_file,
         ranking_file=ranking_json_path,
+        prompt_profile=prompt_profile,
     )
 
     _write_ranking_csv(ranking_csv_path, ranking_rows)
@@ -156,6 +174,7 @@ def evaluate_all_checkpoints(
         "ranking_json": str(ranking_json_path),
         "best_checkpoint": str(best_checkpoint_path),
         "selected_checkpoint": best_checkpoint["selected_checkpoint"],
+        "prompt_profile": prompt_profile,
     }
 
 
@@ -165,7 +184,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--experiment-dir", required=True, help="包含 checkpoint-* 的实验目录")
     parser.add_argument("--experiment-id", required=True, help="实验编号")
     parser.add_argument("--valid-file", default=DEFAULT_VALID_FILE, help="验证集 JSON 路径")
-    parser.add_argument("--max-new-tokens", type=int, default=32, help="最大生成 token 数")
+    parser.add_argument("--max-new-tokens", type=int, default=None, help="最大生成 token 数")
+    parser.add_argument("--prompt-profile", default="direct", help="提示词 profile：direct 或 cot")
     parser.add_argument("--output-dir", default=DEFAULT_OUTPUT_DIR, help="评估输出目录")
     parser.add_argument("--split-name", default=DEFAULT_SPLIT_NAME, help="验证集版本目录名")
     return parser.parse_args()
@@ -181,6 +201,7 @@ def main() -> None:
         output_dir=args.output_dir,
         max_new_tokens=args.max_new_tokens,
         split_name=args.split_name,
+        prompt_profile=args.prompt_profile,
     )
     print(json.dumps(result, ensure_ascii=False, indent=2))
 

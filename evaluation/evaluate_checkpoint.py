@@ -7,7 +7,7 @@ from answer_utils import compare_answers, extract_final_answer
 from evaluation.config import DEFAULT_BASE_MODEL, DEFAULT_OUTPUT_DIR, DEFAULT_SPLIT_NAME, DEFAULT_VALID_FILE
 from evaluation.error_analysis import build_wrong_analysis
 from evaluation.metrics import build_metrics
-from generation import build_messages, load_json_rows, load_model_and_tokenizer, predict_response
+from prompting.profiles import PromptProfile, get_prompt_profile, resolve_max_new_tokens, select_instruction
 
 
 def _write_json(path: Path, data: Any) -> None:
@@ -24,18 +24,55 @@ def _write_jsonl(path: Path, rows: list[dict[str, Any]]) -> None:
             file.write(json.dumps(row, ensure_ascii=False) + "\n")
 
 
+def build_evaluation_record(
+    row: dict[str, Any],
+    raw_response: str,
+    pred_answer: str,
+    pred_answer_type: str,
+    extract_status: str,
+    correct: bool,
+    checkpoint: str,
+    valid_file: str,
+    profile: PromptProfile,
+    max_new_tokens: int,
+    error: str | None = None,
+) -> dict[str, Any]:
+    record = {
+        "id": row["id"],
+        "question": row["question"],
+        "answer": row["answer"],
+        "answer_type": row["answer_type"],
+        "raw_response": raw_response,
+        "pred_answer": pred_answer,
+        "pred_answer_type": pred_answer_type,
+        "extract_status": extract_status,
+        "correct": correct,
+        "checkpoint": checkpoint,
+        "valid_file": valid_file,
+        "prompt_profile": profile.name,
+        "answer_marker": profile.answer_marker,
+        "max_new_tokens": max_new_tokens,
+    }
+    if error is not None:
+        record["error"] = error
+    return record
+
+
 def evaluate_checkpoint(
     base_model: str,
     checkpoint: str,
     valid_file: str,
     experiment_id: str,
     output_dir: str,
-    max_new_tokens: int,
+    max_new_tokens: int | None,
     split_name: str = DEFAULT_SPLIT_NAME,
     result_dir: Path | None = None,
+    prompt_profile: str = "direct",
 ) -> dict[str, Any]:
-    if max_new_tokens <= 0:
-        raise ValueError("--max-new-tokens 必须为正整数")
+    profile = get_prompt_profile(prompt_profile)
+    resolved_max_new_tokens = resolve_max_new_tokens(profile, max_new_tokens)
+
+    from generation import build_messages, load_json_rows, load_model_and_tokenizer, predict_response
 
     valid_data = load_json_rows(Path(valid_file))
     if not valid_data:
@@ -51,12 +88,13 @@ def evaluate_checkpoint(
             if key not in row:
                 raise KeyError(f"验证集第 {index} 条样本缺少字段：{key}")
 
-        messages = build_messages(str(row["instruction"]), str(row["question"]))
+        instruction = select_instruction(profile, str(row["instruction"]))
+        messages = build_messages(instruction, str(row["question"]))
         raw_response = predict_response(
             messages=messages,
             model=model,
             tokenizer=tokenizer,
-            max_new_tokens=max_new_tokens,
+            max_new_tokens=resolved_max_new_tokens,
         ).replace("\n", " ")
 
         error = None
@@ -74,21 +112,19 @@ def evaluate_checkpoint(
             correct = False
             error = str(exc)
 
-        record = {
-            "id": row["id"],
-            "question": row["question"],
-            "answer": row["answer"],
-            "answer_type": row["answer_type"],
-            "raw_response": raw_response,
-            "pred_answer": pred_answer,
-            "pred_answer_type": pred_answer_type,
-            "extract_status": extract_status,
-            "correct": correct,
-            "checkpoint": checkpoint,
-            "valid_file": valid_file,
-        }
-        if error is not None:
-            record["error"] = error
+        record = build_evaluation_record(
+            row=row,
+            raw_response=raw_response,
+            pred_answer=pred_answer,
+            pred_answer_type=pred_answer_type,
+            extract_status=extract_status,
+            correct=correct,
+            checkpoint=checkpoint,
+            valid_file=valid_file,
+            profile=profile,
+            max_new_tokens=resolved_max_new_tokens,
+            error=error,
+        )
         raw_records.append(record)
         if not correct:
             wrong_records.append(record)
@@ -107,6 +143,9 @@ def evaluate_checkpoint(
             "experiment_id": experiment_id,
             "checkpoint": checkpoint,
             "valid_file": valid_file,
+            "prompt_profile": profile.name,
+            "answer_marker": profile.answer_marker,
+            "max_new_tokens": resolved_max_new_tokens,
             "metrics_output": str(metrics_path),
             "raw_output": str(raw_path),
             "wrong_output": str(wrong_path),
@@ -129,7 +168,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--checkpoint", required=True, help="LoRA checkpoint 路径")
     parser.add_argument("--valid-file", default=DEFAULT_VALID_FILE, help="验证集 JSON 路径")
     parser.add_argument("--experiment-id", required=True, help="实验编号")
-    parser.add_argument("--max-new-tokens", type=int, default=32, help="最大生成 token 数")
+    parser.add_argument("--max-new-tokens", type=int, default=None, help="最大生成 token 数")
+    parser.add_argument("--prompt-profile", default="direct", help="提示词 profile：direct 或 cot")
     parser.add_argument("--output-dir", default=DEFAULT_OUTPUT_DIR, help="评估输出目录")
     parser.add_argument("--split-name", default=DEFAULT_SPLIT_NAME, help="验证集版本目录名")
     return parser.parse_args()
@@ -145,6 +185,7 @@ def main() -> None:
         output_dir=args.output_dir,
         max_new_tokens=args.max_new_tokens,
         split_name=args.split_name,
+        prompt_profile=args.prompt_profile,
     )
     print(json.dumps(metrics, ensure_ascii=False, indent=2))
 
