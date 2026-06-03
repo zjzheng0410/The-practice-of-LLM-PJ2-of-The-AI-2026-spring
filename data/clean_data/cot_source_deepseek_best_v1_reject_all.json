@@ -1032,6 +1032,30 @@
     "prompt_version": "cot_teacher_best_v1"
   },
   {
+    "id": "4140",
+    "status": "reject",
+    "reasoning": "",
+    "teacher_answer": "75%",
+    "gold_answer": "75%",
+    "answer_type": "percent",
+    "reject_reason": "题目信息不完整：问题部分被截断，无法准确理解题目要求计算什么，导致答案75%无法可靠推导。",
+    "cot_source": "deepseek_teacher_best_v1",
+    "teacher_model": "codex-gpt-5",
+    "prompt_version": "cot_teacher_best_v1"
+  },
+  {
+    "id": "4178",
+    "status": "reject",
+    "reasoning": "",
+    "teacher_answer": "12",
+    "gold_answer": "12",
+    "answer_type": "integer",
+    "reject_reason": "题目信息不完整：题目提到'根据下面提示'计算长途电话时间，但提示信息缺失，无法独立推导答案。",
+    "cot_source": "deepseek_teacher_best_v1",
+    "teacher_model": "codex-gpt-5",
+    "prompt_version": "cot_teacher_best_v1"
+  },
+  {
     "id": "4314",
     "status": "reject",
     "reasoning": "",
@@ -3281,6 +3305,54 @@
     "prompt_version": "cot_teacher_best_v1"
   },
   {
+    "id": "10541",
+    "status": "reject",
+    "reasoning": "",
+    "teacher_answer": "25",
+    "gold_answer": "25",
+    "answer_type": "integer",
+    "reject_reason": "独立计算：34吨按8:7分配，九月=34×8/15≈18.13吨，与给定答案25不一致，无法通过题目条件推出25。",
+    "cot_source": "deepseek_teacher_best_v1",
+    "teacher_model": "codex-gpt-5",
+    "prompt_version": "cot_teacher_best_v1"
+  },
+  {
+    "id": "10541_0",
+    "status": "reject",
+    "reasoning": "",
+    "teacher_answer": "272/15",
+    "gold_answer": "25",
+    "answer_type": "integer",
+    "reject_reason": "gold_answer='25'与计算不符：九月用煤=34×8/(8+7)=34×8/15=272/15≈18.13吨，gold为25，无法验证",
+    "cot_source": "deepseek_teacher_best_v1",
+    "teacher_model": "codex-gpt-5",
+    "prompt_version": "cot_teacher_best_v1"
+  },
+  {
+    "id": "10569_0",
+    "status": "reject",
+    "reasoning": "",
+    "teacher_answer": "164.47",
+    "gold_answer": "1520",
+    "answer_type": "integer",
+    "reject_reason": "gold_answer='1520'与题目条件矛盾：题目文字'1千克花生可以榨出3.04千克花生油'出油率超过100%不合理；按字面计算需500÷3.04≈164.47千克花生，gold为500×3.04=1520，题目表述与预期答案方向相反",
+    "cot_source": "deepseek_teacher_best_v1",
+    "teacher_model": "codex-gpt-5",
+    "prompt_version": "cot_teacher_best_v1"
+  },
+  {
+    "id": "10569_1",
+    "status": "reject",
+    "reasoning": "",
+    "teacher_answer": "164.47",
+    "gold_answer": "1520",
+    "answer_type": "integer",
+    "reject_reason": "gold_answer='1520'与题目条件矛盾：题目文字'1千克花生可以榨出3.04千克花生油'出油率超过100%不合理；按字面计算需500÷3.04≈164.47千克花生，gold为500×3.04=1520，题目表述与预期答案方向相反",
+    "cot_source": "deepseek_teacher_best_v1",
+    "teacher_model": "codex-gpt-5",
+    "prompt_version": "cot_teacher_best_v1"
+  },
+  {
     "id": "10572",
     "status": "reject",
     "reasoning": "",
@@ -3708,42 +3780,6 @@
     "gold_answer": "400",
     "answer_type": "integer",
     "reject_reason": "独立计算结果200与gold_answer=400不一致",
-    "cot_source": "deepseek_teacher_best_v1",
-    "teacher_model": "codex-gpt-5",
-    "prompt_version": "cot_teacher_best_v1"
-  },
-  {
-    "id": "10541_0",
-    "status": "reject",
-    "reasoning": "",
-    "teacher_answer": "272/15",
-    "gold_answer": "25",
-    "answer_type": "integer",
-    "reject_reason": "gold_answer='25'与计算不符：九月用煤=34×8/(8+7)=34×8/15=272/15≈18.13吨，gold为25，无法验证",
-    "cot_source": "deepseek_teacher_best_v1",
-    "teacher_model": "codex-gpt-5",
-    "prompt_version": "cot_teacher_best_v1"
-  },
-  {
-    "id": "10569_0",
-    "status": "reject",
-    "reasoning": "",
-    "teacher_answer": "164.47",
-    "gold_answer": "1520",
-    "answer_type": "integer",
-    "reject_reason": "gold_answer='1520'与题目条件矛盾：题目文字'1千克花生可以榨出3.04千克花生油'出油率超过100%不合理；按字面计算需500÷3.04≈164.47千克花生，gold为500×3.04=1520，题目表述与预期答案方向相反",
-    "cot_source": "deepseek_teacher_best_v1",
-    "teacher_model": "codex-gpt-5",
-    "prompt_version": "cot_teacher_best_v1"
-  },
-  {
-    "id": "10569_1",
-    "status": "reject",
-    "reasoning": "",
-    "teacher_answer": "164.47",
-    "gold_answer": "1520",
-    "answer_type": "integer",
-    "reject_reason": "gold_answer='1520'与题目条件矛盾：题目文字'1千克花生可以榨出3.04千克花生油'出油率超过100%不合理；按字面计算需500÷3.04≈164.47千克花生，gold为500×3.04=1520，题目表述与预期答案方向相反",
     "cot_source": "deepseek_teacher_best_v1",
     "teacher_model": "codex-gpt-5",
     "prompt_version": "cot_teacher_best_v1"
