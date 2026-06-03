@@ -1,5 +1,9 @@
 # ignore the qwen model files, which are too large to be tracked by git
 /Qwen/
+.claude
+
+data/clean_data/cot_source_data/
+
 
 # ignore the tamp files
 /._____temp/
