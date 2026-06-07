@@ -701,3 +701,18 @@ python -u cot_checkpoint_vote_infer.py \
   --experiment-id cot-001-vote-top4 \
   --strategy majority
 ```
+
+七源投票
+```bash
+python -u cot_checkpoint_vote_infer.py \
+  --test-file data/raw_data/test.json \
+  --source cot2000=submit/raw/cot-001-cp2000.jsonl \
+  --source cot3310=submit/raw/cot-001-cp3310.jsonl \
+  --source cot3000=submit/raw/cot-001-cp3000.jsonl \
+  --source cot1000=submit/raw/cot-001-cp1000.jsonl \
+  --source clean007=submit/raw/clean-007-ensemble-src.jsonl \
+  --source clean008=submit/raw/clean-008-ensemble-src.jsonl \
+  --source clean010=submit/raw/clean-010-ensemble-src.jsonl \
+  --experiment-id cot4-clean007008010-vote \
+  --strategy majority
+```
