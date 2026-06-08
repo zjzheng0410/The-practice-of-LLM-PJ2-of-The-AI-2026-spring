@@ -1,0 +1,35 @@
+[
+  {
+    "checkpoint": "output/cot-002/checkpoint-1000",
+    "checkpoint_name": "checkpoint-1000",
+    "step": 1000,
+    "accuracy": 0.532,
+    "postprocess_failure_rate": 0.0,
+    "correct": 532,
+    "total": 1000,
+    "prompt_profile": "cot",
+    "metrics_file": "eval_result/valid_v2/cot-002/checkpoint-1000/metrics.json"
+  },
+  {
+    "checkpoint": "output/cot-002/checkpoint-2000",
+    "checkpoint_name": "checkpoint-2000",
+    "step": 2000,
+    "accuracy": 0.524,
+    "postprocess_failure_rate": 0.001,
+    "correct": 524,
+    "total": 1000,
+    "prompt_profile": "cot",
+    "metrics_file": "eval_result/valid_v2/cot-002/checkpoint-2000/metrics.json"
+  },
+  {
+    "checkpoint": "output/cot-002/checkpoint-2317",
+    "checkpoint_name": "checkpoint-2317",
+    "step": 2317,
+    "accuracy": 0.517,
+    "postprocess_failure_rate": 0.001,
+    "correct": 517,
+    "total": 1000,
+    "prompt_profile": "cot",
+    "metrics_file": "eval_result/valid_v2/cot-002/checkpoint-2317/metrics.json"
+  }
+]

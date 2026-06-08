@@ -1,0 +1,13 @@
+{
+  "experiment_id": "cot-002",
+  "valid_file": "data/clean_data/valid_sft_v2.json",
+  "prompt_profile": "cot",
+  "selection_metric": "valid_v2_generation_accuracy",
+  "selected_checkpoint": "output/cot-002/checkpoint-1000",
+  "selected_step": 1000,
+  "accuracy": 0.532,
+  "correct": 532,
+  "total": 1000,
+  "tie_break_policy": "accuracy 降序，postprocess_failure_rate 升序，step 升序",
+  "all_ranking_file": "eval_result/valid_v2/cot-002/ranking.json"
+}

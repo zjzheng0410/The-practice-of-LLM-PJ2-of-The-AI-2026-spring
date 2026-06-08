@@ -98,6 +98,14 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--max-length", type=int, default=384, help="最大序列长度")
     parser.add_argument("--lora-r", type=int, default=8, help="LoRA rank")
     parser.add_argument("--save-steps", type=int, default=1000, help="checkpoint 保存步数")
+    parser.add_argument("--per-device-train-batch-size", type=int, default=4, help="单张 GPU 的训练 batch size")
+    parser.add_argument("--gradient-accumulation-steps", type=int, default=4, help="梯度累积步数")
+    parser.add_argument(
+        "--gradient-checkpointing",
+        action=argparse.BooleanOptionalAction,
+        default=True,
+        help="是否开启梯度检查点",
+    )
     return parser.parse_args()
 
 
@@ -109,11 +117,38 @@ def _resolve_output_dir(output_dir: str | None, experiment_id: str | None) -> st
     return DEFAULT_OUTPUT_DIR
 
 
+def build_training_kwargs(args: argparse.Namespace, output_dir: str, has_eval_dataset: bool) -> dict[str, Any]:
+    training_kwargs: dict[str, Any] = {
+        "output_dir": output_dir,
+        "per_device_train_batch_size": args.per_device_train_batch_size,
+        "gradient_accumulation_steps": args.gradient_accumulation_steps,
+        "logging_steps": 10,
+        "num_train_epochs": args.epochs,
+        "save_steps": args.save_steps,
+        "save_strategy": "steps",
+        "learning_rate": args.learning_rate,
+        "save_on_each_node": True,
+        "gradient_checkpointing": args.gradient_checkpointing,
+        "report_to": "none",
+    }
+    if has_eval_dataset:
+        training_kwargs.update(
+            {
+                "eval_strategy": "steps",
+                "eval_steps": args.save_steps,
+            }
+        )
+    return training_kwargs
+
+
 def main() -> None:
     import swanlab
     import torch
     from peft import LoraConfig, TaskType, get_peft_model
-    from swanlab.integration.huggingface import SwanLabCallback
+    try:
+        from swanlab.integration.huggingface import SwanLabCallback
+    except ModuleNotFoundError:
+        from swanlab.integration.transformers import SwanLabCallback
     from transformers import AutoModelForCausalLM, AutoTokenizer, DataCollatorForSeq2Seq, Trainer, TrainingArguments
 
     args = parse_args()
@@ -123,6 +158,10 @@ def main() -> None:
         raise ValueError("--lora-r 必须为正整数")
     if args.save_steps <= 0:
         raise ValueError("--save-steps 必须为正整数")
+    if args.per_device_train_batch_size <= 0:
+        raise ValueError("--per-device-train-batch-size 必须为正整数")
+    if args.gradient_accumulation_steps <= 0:
+        raise ValueError("--gradient-accumulation-steps 必须为正整数")
     if not args.target_field.strip():
         raise ValueError("--target-field 不能为空")
 
@@ -164,27 +203,7 @@ def main() -> None:
     )
     model = get_peft_model(model, config)
 
-    training_kwargs: dict[str, Any] = {
-        "output_dir": output_dir,
-        "per_device_train_batch_size": 4,
-        "gradient_accumulation_steps": 4,
-        "logging_steps": 10,
-        "num_train_epochs": args.epochs,
-        "save_steps": args.save_steps,
-        "save_strategy": "steps",
-        "learning_rate": args.learning_rate,
-        "save_on_each_node": True,
-        "gradient_checkpointing": True,
-        "report_to": "none",
-    }
-    if eval_dataset is not None:
-        training_kwargs.update(
-            {
-                "eval_strategy": "steps",
-                "eval_steps": args.save_steps,
-            }
-        )
-
+    training_kwargs = build_training_kwargs(args, output_dir, eval_dataset is not None)
     training_args = TrainingArguments(**training_kwargs)
 
     swanlab_callback = SwanLabCallback(
