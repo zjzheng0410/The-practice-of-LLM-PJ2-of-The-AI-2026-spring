@@ -747,6 +747,7 @@ python -m evaluation.evaluate_checkpoint \
   --experiment-id cot-001-train-dpo-source \
   --prompt-profile cot \
   --max-new-tokens 128 \
+  --batch-size 32 \
   --output-dir eval_result \
   --split-name train_dpo_source
 ```
@@ -774,9 +775,14 @@ python -u qwen_dpo.py \
   --learning-rate 1e-6 \
   --beta 0.1 \
   --max-length 1024 \
-  --per-device-train-batch-size 2 \
-  --gradient-accumulation-steps 8 \
-  --save-steps 200
+  --per-device-train-batch-size 4 \
+  --gradient-accumulation-steps 4 \
+  --precompute-ref-log-probs \
+  --precompute-ref-batch-size 8 \
+  --dataloader-num-workers 0 \
+  --dataloader-pin-memory \
+  --save-steps 200 \
+  --seed 20260608
 ```
 
 valid_v2 生成式评估：
@@ -788,6 +794,7 @@ python -m evaluation.evaluate_checkpoints \
   --valid-file data/clean_data/valid_sft_v2.json \
   --prompt-profile cot \
   --max-new-tokens 128 \
+  --batch-size 32 \
   --output-dir eval_result \
   --split-name valid_v2
 ```
@@ -806,7 +813,8 @@ python -u infer.py \
   --test-file data/raw_data/test.json \
   --experiment-id dpo-cot001-best \
   --prompt-profile cot \
-  --max-new-tokens 128
+  --max-new-tokens 128 \
+  --batch-size 32
 ```
 
 DPO 若未超过当前最好投票方案，只作为 RL 增强实验写入报告，不替换最终提交。

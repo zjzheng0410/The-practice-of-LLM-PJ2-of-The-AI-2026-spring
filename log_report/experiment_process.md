@@ -79,3 +79,11 @@
 - DPO 数据采用显式 conversational `prompt/chosen/rejected` 格式，不使用 valid_v2 写入训练数据。
 - DPO 训练参数按 TRL 1.5.1 官方接口保留 `max_length`，不引入已冲突的 prompt/completion length 参数。
 - 新增 DPO 数据构建与训练参数单测，覆盖过滤、报错和核心 DPOConfig 参数传递。
+
+## 2026-06-08 DPO batch 与 reference 预计算改造
+
+- 新增 shared batch 生成编排，统一评估与推理中的连续切片、字段校验和 prompt message 构造。
+- 改造单 checkpoint 与多 checkpoint 生成式评估，新增 `--batch-size`，DPO rejected 来源生成不再逐样本调用生成。
+- 推理入口复用 shared batch 编排，保持 CSV 与 raw JSONL 输出 schema 不变。
+- DPO 训练入口默认开启 TRL reference logprob 预计算，严格校验 TRL 1.5.1 与必需 DPOConfig 参数。
+- 更新 RL/DPO 操作规范，并补充 batch 生成、评估透传和 DPO runtime 能力检查单测。

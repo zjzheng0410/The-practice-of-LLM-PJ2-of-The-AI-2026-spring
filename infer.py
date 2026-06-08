@@ -2,24 +2,23 @@ import argparse
 import csv
 import json
 from pathlib import Path
-from typing import Any, Iterator
 
 from tqdm import tqdm
 
 from answer_utils import extract_final_answer
 from generation import (
     DEFAULT_BASE_MODEL,
-    build_messages,
     load_json_rows,
     load_model_and_tokenizer,
     predict_responses,
 )
-from prompting.profiles import get_prompt_profile, resolve_max_new_tokens, select_instruction
+from generation_batch import DEFAULT_GENERATION_BATCH_SIZE, build_messages_batch, iter_batches
+from prompting.profiles import get_prompt_profile, resolve_max_new_tokens
 
 
 DEFAULT_CHECKPOINT = "./output/Qwen/checkpoint-3750/"
 DEFAULT_TEST_FILE = "data/raw_data/test.json"
-DEFAULT_BATCH_SIZE = 8
+DEFAULT_BATCH_SIZE = DEFAULT_GENERATION_BATCH_SIZE
 
 
 def _resolve_output_paths(args: argparse.Namespace) -> tuple[Path, Path]:
@@ -42,15 +41,6 @@ def _resolve_output_paths(args: argparse.Namespace) -> tuple[Path, Path]:
     if not raw_path.is_absolute() and raw_path.parent == Path("."):
         raw_path = Path("submit") / "raw" / raw_path
     return output_path, raw_path
-
-
-def _iter_batches(
-    rows: list[dict[str, Any]],
-    batch_size: int,
-) -> Iterator[tuple[int, list[dict[str, Any]]]]:
-    # 这里只做连续切分，字段校验、prompt 构造和写文件都留在主流程中。
-    for start_index in range(0, len(rows), batch_size):
-        yield start_index, rows[start_index : start_index + batch_size]
 
 
 def parse_args() -> argparse.Namespace:
@@ -88,17 +78,13 @@ def main() -> None:
     ) as raw_file:
         writer = csv.writer(csv_file)
         with tqdm(total=len(test_data)) as progress:
-            for batch_start, batch_rows in _iter_batches(test_data, args.batch_size):
-                messages_batch = []
-                for offset, row in enumerate(batch_rows):
-                    index = batch_start + offset
-                    for key in ("id", "instruction", "question"):
-                        if key not in row:
-                            raise KeyError(f"测试集第 {index} 条样本缺少字段：{key}")
-
-                    instruction = select_instruction(profile, str(row["instruction"]))
-                    messages_batch.append(build_messages(instruction, str(row["question"])))
-
+            for batch_start, batch_rows in iter_batches(test_data, args.batch_size):
+                messages_batch = build_messages_batch(
+                    rows=batch_rows,
+                    profile=profile,
+                    required_fields=("id", "instruction", "question"),
+                    start_index=batch_start,
+                )
                 raw_responses = predict_responses(
                     messages_batch=messages_batch,
                     model=model,

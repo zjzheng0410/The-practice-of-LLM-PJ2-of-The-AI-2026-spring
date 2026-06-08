@@ -9,6 +9,14 @@ from runtime_defaults import DEFAULT_BASE_MODEL
 DEFAULT_TRAIN_FILE = "data/clean_data/train_dpo_cot001_v1.json"
 DEFAULT_POLICY_CHECKPOINT = "output/cot-001/checkpoint-2000"
 DEFAULT_OUTPUT_DIR = "output/dpo-cot001"
+EXPECTED_TRL_VERSION = "1.5.1"
+REQUIRED_DPO_CONFIG_PARAMETERS = (
+    "precompute_ref_log_probs",
+    "precompute_ref_batch_size",
+    "per_device_train_batch_size",
+    "gradient_accumulation_steps",
+    "max_length",
+)
 
 
 def load_json_list(path: Path) -> list[dict[str, Any]]:
@@ -41,6 +49,19 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--per-device-train-batch-size", type=int, default=2)
     parser.add_argument("--gradient-accumulation-steps", type=int, default=8)
     parser.add_argument(
+        "--precompute-ref-log-probs",
+        action=argparse.BooleanOptionalAction,
+        default=True,
+    )
+    parser.add_argument("--precompute-ref-batch-size", type=int, default=8)
+    parser.add_argument("--dataloader-num-workers", type=int, default=0)
+    parser.add_argument(
+        "--dataloader-pin-memory",
+        action=argparse.BooleanOptionalAction,
+        default=True,
+    )
+    parser.add_argument("--seed", type=int, default=20260608)
+    parser.add_argument(
         "--gradient-checkpointing",
         action=argparse.BooleanOptionalAction,
         default=True,
@@ -58,6 +79,11 @@ def require_positive_float(value: float, name: str) -> None:
         raise ValueError(f"{name} 必须为正数")
 
 
+def require_non_negative_int(value: int, name: str) -> None:
+    if value < 0:
+        raise ValueError(f"{name} 必须为非负整数")
+
+
 def validate_args(args: argparse.Namespace) -> None:
     if not Path(args.policy_checkpoint).is_dir():
         raise NotADirectoryError(f"--policy-checkpoint 不存在：{args.policy_checkpoint}")
@@ -70,6 +96,27 @@ def validate_args(args: argparse.Namespace) -> None:
     require_positive_int(args.save_steps, "--save-steps")
     require_positive_int(args.per_device_train_batch_size, "--per-device-train-batch-size")
     require_positive_int(args.gradient_accumulation_steps, "--gradient-accumulation-steps")
+    require_positive_int(args.precompute_ref_batch_size, "--precompute-ref-batch-size")
+    require_non_negative_int(args.dataloader_num_workers, "--dataloader-num-workers")
+
+
+def validate_dpo_runtime_capabilities() -> None:
+    import inspect
+    import trl
+    from trl import DPOConfig
+
+    if trl.__version__ != EXPECTED_TRL_VERSION:
+        raise RuntimeError(f"TRL 版本必须为 {EXPECTED_TRL_VERSION}，当前为 {trl.__version__}")
+
+    signature = inspect.signature(DPOConfig.__init__)
+    missing = [
+        parameter
+        for parameter in REQUIRED_DPO_CONFIG_PARAMETERS
+        if parameter not in signature.parameters
+    ]
+    if missing:
+        joined = ", ".join(missing)
+        raise RuntimeError(f"DPOConfig 缺少必需参数：{joined}")
 
 
 def load_tokenizer(base_model: str) -> Any:
@@ -132,12 +179,22 @@ def build_training_kwargs(args: argparse.Namespace) -> dict[str, Any]:
         "logging_steps": 10,
         "gradient_checkpointing": args.gradient_checkpointing,
         "remove_unused_columns": False,
+        "precompute_ref_log_probs": args.precompute_ref_log_probs,
+        "precompute_ref_batch_size": args.precompute_ref_batch_size,
+        "dataloader_num_workers": args.dataloader_num_workers,
+        "dataloader_pin_memory": args.dataloader_pin_memory,
+        "seed": args.seed,
+        "data_seed": args.seed,
+        "disable_dropout": True,
+        "auto_find_batch_size": False,
         "bf16": True,
         "report_to": "none",
     }
 
 
 def build_training_args(args: argparse.Namespace) -> Any:
+    validate_dpo_runtime_capabilities()
+
     from trl import DPOConfig
 
     return DPOConfig(**build_training_kwargs(args))
@@ -150,11 +207,11 @@ def main() -> None:
     from datasets import Dataset
     from trl import DPOTrainer
 
+    training_args = build_training_args(args)
     tokenizer = load_tokenizer(args.base_model)
     train_dataset = Dataset.from_list(load_json_list(Path(args.train_file)))
     policy_model = load_policy_model(args.base_model, args.policy_checkpoint, args.gradient_checkpointing)
     reference_model = load_reference_model(args.base_model, args.policy_checkpoint)
-    training_args = build_training_args(args)
 
     trainer = DPOTrainer(
         model=policy_model,

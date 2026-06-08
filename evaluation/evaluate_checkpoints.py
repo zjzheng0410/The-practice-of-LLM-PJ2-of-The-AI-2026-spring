@@ -6,6 +6,7 @@ from pathlib import Path
 from typing import Any
 
 from evaluation.config import DEFAULT_BASE_MODEL, DEFAULT_OUTPUT_DIR, DEFAULT_SPLIT_NAME, DEFAULT_VALID_FILE
+from generation_batch import DEFAULT_GENERATION_BATCH_SIZE
 
 CHECKPOINT_PATTERN = re.compile(r"^checkpoint-(\d+)$")
 TIE_BREAK_POLICY = "accuracy 降序，postprocess_failure_rate 升序，step 升序"
@@ -133,7 +134,11 @@ def evaluate_all_checkpoints(
     max_new_tokens: int | None,
     split_name: str = DEFAULT_SPLIT_NAME,
     prompt_profile: str = "direct",
+    batch_size: int = DEFAULT_GENERATION_BATCH_SIZE,
 ) -> dict[str, Any]:
+    if batch_size <= 0:
+        raise ValueError("batch_size 必须为正整数")
+
     from evaluation.evaluate_checkpoint import evaluate_checkpoint
 
     checkpoints = discover_checkpoints(Path(experiment_dir))
@@ -151,6 +156,7 @@ def evaluate_all_checkpoints(
                 split_name=split_name,
                 result_dir=summary_dir / checkpoint.name,
                 prompt_profile=prompt_profile,
+                batch_size=batch_size,
             )
         )
 
@@ -188,6 +194,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--prompt-profile", default="direct", help="提示词 profile：direct 或 cot")
     parser.add_argument("--output-dir", default=DEFAULT_OUTPUT_DIR, help="评估输出目录")
     parser.add_argument("--split-name", default=DEFAULT_SPLIT_NAME, help="验证集版本目录名")
+    parser.add_argument("--batch-size", type=int, default=DEFAULT_GENERATION_BATCH_SIZE, help="单进程评估 batch size")
     return parser.parse_args()
 
 
@@ -202,6 +209,7 @@ def main() -> None:
         max_new_tokens=args.max_new_tokens,
         split_name=args.split_name,
         prompt_profile=args.prompt_profile,
+        batch_size=args.batch_size,
     )
     print(json.dumps(result, ensure_ascii=False, indent=2))
 
