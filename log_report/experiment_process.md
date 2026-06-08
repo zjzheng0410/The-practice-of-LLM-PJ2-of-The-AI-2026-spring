@@ -71,3 +71,11 @@
 - 新增 test 投票提交入口，只读取 checkpoint raw，输出无表头 CSV 与 provenance JSONL，并保护已有输出。
 - 新增投票、source 解析和投票评估统计测试，覆盖无效候选跳过、全部无效 primary 回退和 primary 对比统计。
 - valid_v2 top4 投票复现 `577/1000 = 0.577`，相比 primary `cot2000` 的 `544/1000 = 0.544` 增加 33 题。
+
+## 2026-06-08 DPO 工具链接入
+
+- 新增 DPO preference 数据构建入口，复用 CoT accepted 数据作为 chosen，复用 cot-001 训练集错误生成作为 rejected。
+- 新增 DPO 训练入口，从 cot-001 checkpoint-2000 加载 policy 与冻结 reference，使用 TRL DPOTrainer 训练 LoRA。
+- DPO 数据采用显式 conversational `prompt/chosen/rejected` 格式，不使用 valid_v2 写入训练数据。
+- DPO 训练参数按 TRL 1.5.1 官方接口保留 `max_length`，不引入已冲突的 prompt/completion length 参数。
+- 新增 DPO 数据构建与训练参数单测，覆盖过滤、报错和核心 DPOConfig 参数传递。

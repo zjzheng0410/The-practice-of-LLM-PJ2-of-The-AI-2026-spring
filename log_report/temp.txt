@@ -719,3 +719,94 @@ python -u cot_checkpoint_vote_infer.py \
   --experiment-id cot4-clean007008010-vote \
   --strategy majority
 ```
+
+## RL/DPO 操作规范
+
+所有命令均在项目目录执行：
+
+```bash
+cd /home/zjzheng/Lesson/AI_2026spring/PJ2/The-practice-of-LLM-PJ2-of-The-AI-2026-spring
+```
+
+DPO 依赖安装与版本检查：
+
+```bash
+pip install "trl==1.5.1" "datasets==4.8.4"
+```
+
+```bash
+python -c "import trl, datasets; print(trl.__version__); print(datasets.__version__)"
+```
+
+生成 cot-001 在训练集上的 DPO rejected 来源：
+
+```bash
+python -m evaluation.evaluate_checkpoint \
+  --checkpoint output/cot-001/checkpoint-2000 \
+  --valid-file data/clean_data/train_sft_cot_v1.json \
+  --experiment-id cot-001-train-dpo-source \
+  --prompt-profile cot \
+  --max-new-tokens 128 \
+  --output-dir eval_result \
+  --split-name train_dpo_source
+```
+
+构建 DPO preference 数据：
+
+```bash
+python -m data_preprocess.build_dpo_pairs \
+  --train-file data/clean_data/train_sft_cot_v1.json \
+  --generated-raw-file eval_result/train_dpo_source/cot-001-train-dpo-source/raw.jsonl \
+  --output-file data/clean_data/train_dpo_cot001_v1.json \
+  --report-file data/clean_data/dpo_report_cot001_v1.json \
+  --prompt-profile cot
+```
+
+DPO 训练：
+
+```bash
+python -u qwen_dpo.py \
+  --base-model ./Qwen/Qwen2.5-0.5B-Instruct/ \
+  --policy-checkpoint output/cot-001/checkpoint-2000 \
+  --train-file data/clean_data/train_dpo_cot001_v1.json \
+  --output-dir output/dpo-cot001 \
+  --epochs 1 \
+  --learning-rate 1e-6 \
+  --beta 0.1 \
+  --max-length 1024 \
+  --per-device-train-batch-size 2 \
+  --gradient-accumulation-steps 8 \
+  --save-steps 200
+```
+
+valid_v2 生成式评估：
+
+```bash
+python -m evaluation.evaluate_checkpoints \
+  --experiment-dir output/dpo-cot001 \
+  --experiment-id dpo-cot001 \
+  --valid-file data/clean_data/valid_sft_v2.json \
+  --prompt-profile cot \
+  --max-new-tokens 128 \
+  --output-dir eval_result \
+  --split-name valid_v2
+```
+
+查看最佳 checkpoint：
+
+```bash
+python -m json.tool eval_result/valid_v2/dpo-cot001/best_checkpoint.json
+```
+
+若 DPO best checkpoint 的 valid_v2 高于 `0.544`，生成测试集提交：
+
+```bash
+python -u infer.py \
+  --checkpoint output/dpo-cot001/checkpoint-<best-step> \
+  --test-file data/raw_data/test.json \
+  --experiment-id dpo-cot001-best \
+  --prompt-profile cot \
+  --max-new-tokens 128
+```
+
+DPO 若未超过当前最好投票方案，只作为 RL 增强实验写入报告，不替换最终提交。
