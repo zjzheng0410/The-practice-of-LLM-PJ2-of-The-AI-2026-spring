@@ -1,0 +1,127 @@
+{
+  "total_wrong": 4208,
+  "tag_counts": {
+    "answer_type_mismatch": {
+      "count": 773,
+      "ratio": 0.1836977186311787
+    },
+    "fraction_percent_error": {
+      "count": 26,
+      "ratio": 0.006178707224334601
+    },
+    "geometry_keyword": {
+      "count": 561,
+      "ratio": 0.1333174904942966
+    },
+    "long_question": {
+      "count": 55,
+      "ratio": 0.013070342205323195
+    },
+    "multi_step_keyword": {
+      "count": 1533,
+      "ratio": 0.3643060836501901
+    },
+    "numeric_value_error": {
+      "count": 3431,
+      "ratio": 0.815351711026616
+    },
+    "postprocess_failure": {
+      "count": 13,
+      "ratio": 0.0030893536121673003
+    },
+    "rate_ratio_keyword": {
+      "count": 284,
+      "ratio": 0.06749049429657794
+    },
+    "unit_scale_suspect": {
+      "count": 143,
+      "ratio": 0.0339828897338403
+    },
+    "unknown_reason": {
+      "count": 1,
+      "ratio": 0.0002376425855513308
+    }
+  },
+  "by_answer_type": {
+    "decimal": 544,
+    "fraction": 214,
+    "integer": 3286,
+    "mixed_fraction": 21,
+    "multi_answer": 2,
+    "percent": 134,
+    "yes_no": 7
+  },
+  "by_pred_answer_type": {
+    "decimal": 831,
+    "fraction": 285,
+    "integer": 2943,
+    "mixed_fraction": 10,
+    "percent": 123,
+    "unknown": 13,
+    "yes_no": 3
+  },
+  "by_extract_status": {
+    "error": 2,
+    "matched": 4195,
+    "unknown_short": 11
+  },
+  "answer_type_x_attribution_tag": {
+    "decimal": {
+      "answer_type_mismatch": 150,
+      "fraction_percent_error": 1,
+      "geometry_keyword": 189,
+      "long_question": 11,
+      "multi_step_keyword": 182,
+      "numeric_value_error": 394,
+      "rate_ratio_keyword": 29,
+      "unit_scale_suspect": 24
+    },
+    "fraction": {
+      "answer_type_mismatch": 52,
+      "fraction_percent_error": 8,
+      "geometry_keyword": 11,
+      "long_question": 2,
+      "multi_step_keyword": 91,
+      "numeric_value_error": 159,
+      "postprocess_failure": 4,
+      "rate_ratio_keyword": 15,
+      "unit_scale_suspect": 1
+    },
+    "integer": {
+      "answer_type_mismatch": 517,
+      "fraction_percent_error": 2,
+      "geometry_keyword": 358,
+      "long_question": 38,
+      "multi_step_keyword": 1175,
+      "numeric_value_error": 2769,
+      "postprocess_failure": 9,
+      "rate_ratio_keyword": 227,
+      "unit_scale_suspect": 111
+    },
+    "mixed_fraction": {
+      "answer_type_mismatch": 19,
+      "fraction_percent_error": 8,
+      "multi_step_keyword": 10,
+      "numeric_value_error": 2,
+      "rate_ratio_keyword": 2
+    },
+    "multi_answer": {
+      "answer_type_mismatch": 2,
+      "multi_step_keyword": 1
+    },
+    "percent": {
+      "answer_type_mismatch": 27,
+      "fraction_percent_error": 7,
+      "geometry_keyword": 3,
+      "long_question": 4,
+      "multi_step_keyword": 74,
+      "numeric_value_error": 107,
+      "rate_ratio_keyword": 11,
+      "unit_scale_suspect": 7
+    },
+    "yes_no": {
+      "answer_type_mismatch": 6,
+      "unknown_reason": 1
+    }
+  }
+}

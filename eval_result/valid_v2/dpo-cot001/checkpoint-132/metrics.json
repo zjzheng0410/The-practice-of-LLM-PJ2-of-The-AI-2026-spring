@@ -1,0 +1,63 @@
+{
+  "total": 1000,
+  "correct": 556,
+  "accuracy": 0.556,
+  "by_answer_type": {
+    "decimal": {
+      "total": 89,
+      "correct": 35,
+      "accuracy": 0.39325842696629215
+    },
+    "fraction": {
+      "total": 36,
+      "correct": 7,
+      "accuracy": 0.19444444444444445
+    },
+    "integer": {
+      "total": 840,
+      "correct": 497,
+      "accuracy": 0.5916666666666667
+    },
+    "multi_answer": {
+      "total": 1,
+      "correct": 0,
+      "accuracy": 0.0
+    },
+    "percent": {
+      "total": 34,
+      "correct": 17,
+      "accuracy": 0.5
+    }
+  },
+  "postprocess_failure_count": 0,
+  "postprocess_failure_rate": 0.0,
+  "special_metrics": {
+    "fraction": {
+      "total": 36,
+      "correct": 7,
+      "accuracy": 0.19444444444444445
+    },
+    "percent": {
+      "total": 34,
+      "correct": 17,
+      "accuracy": 0.5
+    },
+    "long_question": {
+      "total": 5,
+      "correct": 1,
+      "accuracy": 0.2
+    }
+  },
+  "long_question_threshold": 100,
+  "experiment_id": "dpo-cot001",
+  "checkpoint": "output/dpo-cot001/checkpoint-132",
+  "valid_file": "data/clean_data/valid_sft_v2.json",
+  "prompt_profile": "cot",
+  "answer_marker": "最终答案：",
+  "max_new_tokens": 128,
+  "metrics_output": "eval_result/valid_v2/dpo-cot001/checkpoint-132/metrics.json",
+  "raw_output": "eval_result/valid_v2/dpo-cot001/checkpoint-132/raw.jsonl",
+  "wrong_output": "eval_result/valid_v2/dpo-cot001/checkpoint-132/wrong.jsonl",
+  "wrong_analysis_output": "eval_result/valid_v2/dpo-cot001/checkpoint-132/wrong_analysis.json",
+  "wrong_analysis_jsonl_output": "eval_result/valid_v2/dpo-cot001/checkpoint-132/wrong_analysis.jsonl"
+}

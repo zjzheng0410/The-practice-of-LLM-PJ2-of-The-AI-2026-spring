@@ -1,6 +1,8 @@
 from dataclasses import dataclass
 from typing import Any, Iterator
 
+from tqdm import tqdm
+
 from prompting.profiles import PromptProfile, select_instruction
 
 
@@ -56,20 +58,22 @@ def generate_responses_for_rows(
     from generation import predict_responses
 
     generated: list[tuple[dict[str, Any], str]] = []
-    for start_index, batch_rows in iter_batches(rows, batch_size):
-        messages_batch = build_messages_batch(
-            rows=batch_rows,
-            profile=profile,
-            required_fields=required_fields,
-            start_index=start_index,
-        )
-        raw_responses = predict_responses(
-            messages_batch=messages_batch,
-            model=model,
-            tokenizer=tokenizer,
-            max_new_tokens=max_new_tokens,
-        )
-        if len(raw_responses) != len(batch_rows):
-            raise ValueError(f"batch 生成返回数量异常：{len(raw_responses)} != {len(batch_rows)}")
-        generated.extend(zip(batch_rows, raw_responses))
+    with tqdm(total=len(rows), desc="Generating", unit="sample") as progress:
+        for start_index, batch_rows in iter_batches(rows, batch_size):
+            messages_batch = build_messages_batch(
+                rows=batch_rows,
+                profile=profile,
+                required_fields=required_fields,
+                start_index=start_index,
+            )
+            raw_responses = predict_responses(
+                messages_batch=messages_batch,
+                model=model,
+                tokenizer=tokenizer,
+                max_new_tokens=max_new_tokens,
+            )
+            if len(raw_responses) != len(batch_rows):
+                raise ValueError(f"batch 生成返回数量异常：{len(raw_responses)} != {len(batch_rows)}")
+            generated.extend(zip(batch_rows, raw_responses))
+            progress.update(len(batch_rows))
     return generated

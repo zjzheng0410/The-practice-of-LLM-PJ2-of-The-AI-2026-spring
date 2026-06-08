@@ -1,0 +1,3 @@
+checkpoint,checkpoint_name,step,accuracy,postprocess_failure_rate,correct,total,prompt_profile,metrics_file
+output/dpo-cot001/checkpoint-66,checkpoint-66,66,0.559,0.001,559,1000,cot,eval_result/valid_v2/dpo-cot001/checkpoint-66/metrics.json
+output/dpo-cot001/checkpoint-132,checkpoint-132,132,0.556,0.0,556,1000,cot,eval_result/valid_v2/dpo-cot001/checkpoint-132/metrics.json

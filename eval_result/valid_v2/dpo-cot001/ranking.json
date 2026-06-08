@@ -1,0 +1,24 @@
+[
+  {
+    "checkpoint": "output/dpo-cot001/checkpoint-66",
+    "checkpoint_name": "checkpoint-66",
+    "step": 66,
+    "accuracy": 0.559,
+    "postprocess_failure_rate": 0.001,
+    "correct": 559,
+    "total": 1000,
+    "prompt_profile": "cot",
+    "metrics_file": "eval_result/valid_v2/dpo-cot001/checkpoint-66/metrics.json"
+  },
+  {
+    "checkpoint": "output/dpo-cot001/checkpoint-132",
+    "checkpoint_name": "checkpoint-132",
+    "step": 132,
+    "accuracy": 0.556,
+    "postprocess_failure_rate": 0.0,
+    "correct": 556,
+    "total": 1000,
+    "prompt_profile": "cot",
+    "metrics_file": "eval_result/valid_v2/dpo-cot001/checkpoint-132/metrics.json"
+  }
+]

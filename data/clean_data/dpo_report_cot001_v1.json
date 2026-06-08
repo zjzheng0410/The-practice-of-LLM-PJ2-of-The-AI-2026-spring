@@ -1,0 +1,11 @@
+{
+  "train_file": "data/clean_data/train_sft_cot_v1.json",
+  "generated_raw_file": "eval_result/train_dpo_source/cot-001-train-dpo-source/raw.jsonl",
+  "output_file": "data/clean_data/train_dpo_cot001_v1.json",
+  "prompt_profile": "cot",
+  "train_count": 10587,
+  "generated_count": 10587,
+  "chosen_valid_count": 10587,
+  "rejected_valid_count": 4161,
+  "pair_count": 4161
+}

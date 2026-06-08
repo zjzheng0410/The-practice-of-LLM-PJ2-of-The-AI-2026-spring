@@ -1,0 +1,93 @@
+{
+  "total_wrong": 444,
+  "tag_counts": {
+    "answer_type_mismatch": {
+      "count": 69,
+      "ratio": 0.1554054054054054
+    },
+    "fraction_percent_error": {
+      "count": 1,
+      "ratio": 0.0022522522522522522
+    },
+    "geometry_keyword": {
+      "count": 62,
+      "ratio": 0.13963963963963963
+    },
+    "long_question": {
+      "count": 4,
+      "ratio": 0.009009009009009009
+    },
+    "multi_step_keyword": {
+      "count": 162,
+      "ratio": 0.36486486486486486
+    },
+    "numeric_value_error": {
+      "count": 375,
+      "ratio": 0.8445945945945946
+    },
+    "rate_ratio_keyword": {
+      "count": 23,
+      "ratio": 0.0518018018018018
+    },
+    "unit_scale_suspect": {
+      "count": 19,
+      "ratio": 0.04279279279279279
+    }
+  },
+  "by_answer_type": {
+    "decimal": 54,
+    "fraction": 29,
+    "integer": 343,
+    "multi_answer": 1,
+    "percent": 17
+  },
+  "by_pred_answer_type": {
+    "decimal": 80,
+    "fraction": 29,
+    "integer": 318,
+    "mixed_fraction": 1,
+    "percent": 16
+  },
+  "by_extract_status": {
+    "matched": 444
+  },
+  "answer_type_x_attribution_tag": {
+    "decimal": {
+      "answer_type_mismatch": 12,
+      "geometry_keyword": 16,
+      "multi_step_keyword": 22,
+      "numeric_value_error": 42,
+      "rate_ratio_keyword": 2,
+      "unit_scale_suspect": 2
+    },
+    "fraction": {
+      "answer_type_mismatch": 8,
+      "fraction_percent_error": 1,
+      "multi_step_keyword": 19,
+      "numeric_value_error": 21,
+      "rate_ratio_keyword": 5,
+      "unit_scale_suspect": 1
+    },
+    "integer": {
+      "answer_type_mismatch": 46,
+      "geometry_keyword": 45,
+      "long_question": 3,
+      "multi_step_keyword": 114,
+      "numeric_value_error": 297,
+      "rate_ratio_keyword": 15,
+      "unit_scale_suspect": 15
+    },
+    "multi_answer": {
+      "answer_type_mismatch": 1
+    },
+    "percent": {
+      "answer_type_mismatch": 2,
+      "geometry_keyword": 1,
+      "long_question": 1,
+      "multi_step_keyword": 7,
+      "numeric_value_error": 15,
+      "rate_ratio_keyword": 1,
+      "unit_scale_suspect": 1
+    }
+  }
+}

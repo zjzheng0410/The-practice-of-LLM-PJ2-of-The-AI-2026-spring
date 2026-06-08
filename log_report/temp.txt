@@ -747,7 +747,7 @@ python -m evaluation.evaluate_checkpoint \
   --experiment-id cot-001-train-dpo-source \
   --prompt-profile cot \
   --max-new-tokens 128 \
-  --batch-size 32 \
+  --batch-size 128 \
   --output-dir eval_result \
   --split-name train_dpo_source
 ```
@@ -771,17 +771,18 @@ python -u qwen_dpo.py \
   --policy-checkpoint output/cot-001/checkpoint-2000 \
   --train-file data/clean_data/train_dpo_cot001_v1.json \
   --output-dir output/dpo-cot001 \
-  --epochs 1 \
+  --epochs 2 \
   --learning-rate 1e-6 \
   --beta 0.1 \
-  --max-length 1024 \
-  --per-device-train-batch-size 4 \
-  --gradient-accumulation-steps 4 \
+  --max-length 384 \
+  --per-device-train-batch-size 64 \
+  --gradient-accumulation-steps 1 \
   --precompute-ref-log-probs \
-  --precompute-ref-batch-size 8 \
-  --dataloader-num-workers 0 \
+  --precompute-ref-batch-size 64 \
+  --dataloader-num-workers 2 \
   --dataloader-pin-memory \
-  --save-steps 200 \
+  --no-gradient-checkpointing \
+  --save-steps 66 \
   --seed 20260608
 ```
 
@@ -809,12 +810,12 @@ python -m json.tool eval_result/valid_v2/dpo-cot001/best_checkpoint.json
 
 ```bash
 python -u infer.py \
-  --checkpoint output/dpo-cot001/checkpoint-<best-step> \
+  --checkpoint output/dpo-cot001/checkpoint-66 \
   --test-file data/raw_data/test.json \
   --experiment-id dpo-cot001-best \
   --prompt-profile cot \
   --max-new-tokens 128 \
-  --batch-size 32
+  --batch-size 128
 ```
 
 DPO 若未超过当前最好投票方案，只作为 RL 增强实验写入报告，不替换最终提交。
